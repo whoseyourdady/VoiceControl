@@ -216,7 +216,9 @@ public class SemanticIdentify {
 			} else {
 				System.out.println("设置备忘:" + time[0] + ":" + time[1] + "事件："
 						+ strVoice);
+
 				Log.v("Work", "hour " + time[0] + " minute " + time[1]);
+
 				task = new Task(Task.SetAlarm,  strVoice);
 			}
 			//task = new Task(Task.SetAlarm,  strVoice);

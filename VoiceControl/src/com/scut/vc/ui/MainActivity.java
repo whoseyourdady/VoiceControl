@@ -91,8 +91,11 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		//Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		Task task = new Task(Task.CALL, callTarget);
-		Test(task);
+		//Task task = new Task(Task.CALL, callTarget);
+		//Task task = new Task(Task.SetAlarm, "´óÄÖÌì¹¬ÄÖÖÓ");
+		//Test(task);
+		
+		voiceString = "´óÄÖÌì¹¬ÄÖÖÓ";
 
 
 	}
