@@ -150,8 +150,8 @@ public class SemanticIdentify {
 				task = new Task(Task.IdentifyError, null);
 			} else {
 				System.out.println("拨打电话" + command.mCallNum);
-				Contact.ContactPerson contactPerson = mContact.new ContactPerson(
-						command.mCallNum, command.mContactName);
+				Contact.ContactPerson contactPerson = mContact.new ContactPerson(command.mContactName
+						, command.mCallNum);
 				callTarget.add(contactPerson);
 				task = new Task(Task.CALL, callTarget);
 			}
