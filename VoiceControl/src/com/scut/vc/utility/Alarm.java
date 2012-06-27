@@ -65,8 +65,8 @@ public class Alarm {
 		}else{
 			//将数据存入数据中
 			new AlertDialog.Builder(context)
-			.setTitle("注意！")
-			.setMessage("确定输入："+ alarmStr + "?")
+			.setTitle("将设置备忘提醒")
+			.setMessage("确定输入：“"+ alarmStr + "”到备忘提醒中?")
 			.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 				public void onClick(DialogInterface arg0, int arg1) {

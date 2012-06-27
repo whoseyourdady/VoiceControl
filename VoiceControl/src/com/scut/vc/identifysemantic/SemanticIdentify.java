@@ -3,6 +3,7 @@ package com.scut.vc.identifysemantic;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.scut.vc.ui.MainActivity;
 import com.scut.vc.utility.AppsManager;
@@ -215,8 +216,10 @@ public class SemanticIdentify {
 			} else {
 				System.out.println("设置备忘:" + time[0] + ":" + time[1] + "事件："
 						+ strVoice);
+				Log.v("Work", "hour " + time[0] + " minute " + time[1]);
+				task = new Task(Task.SetAlarm,  strVoice);
 			}
-			task = new Task(Task.SetAlarm,  strVoice);
+			//task = new Task(Task.SetAlarm,  strVoice);
 			
 			break;
 		}
@@ -354,89 +357,95 @@ public class SemanticIdentify {
 		boolean aNum = false;
 		int k = 0;
 		for (int i = 0; i < str.length(); i++) {
-			if (str.charAt(i) == '一') {
+			if (str.charAt(i) == '一' || str.charAt(i) == '1') {
 				num[k] += "1";
 				aNum = true;
 			} else {
-				if (str.charAt(i) == '二' || str.charAt(i) == '两') {
+				if (str.charAt(i) == '二' || str.charAt(i) == '两' || str.charAt(i) == '2') {
 					num[k] += "2";
 					aNum = true;
 				} else {
-					if (str.charAt(i) == '三') {
+					if (str.charAt(i) == '三' || str.charAt(i) == '3') {
 						num[k] += "3";
 						aNum = true;
 					} else {
-						if (str.charAt(i) == '三') {
+						if (str.charAt(i) == '三' || str.charAt(i) == '3') {
 							num[k] += "3";
 							aNum = true;
 						} else {
-							if (str.charAt(i) == '四') {
+							if (str.charAt(i) == '四' || str.charAt(i) == '4') {
 								num[k] += "4";
 								aNum = true;
 							} else {
-								if (str.charAt(i) == '五') {
+								if (str.charAt(i) == '五' || str.charAt(i) == '5') {
 									num[k] += "5";
 									aNum = true;
 								} else {
-									if (str.charAt(i) == '六') {
+									if (str.charAt(i) == '六' || str.charAt(i) == '6') {
 										num[k] += "6";
 										aNum = true;
 									} else {
-										if (str.charAt(i) == '七') {
+										if (str.charAt(i) == '七' || str.charAt(i) == '7') {
 											num[k] += "7";
 											aNum = true;
 										} else {
-											if (str.charAt(i) == '八') {
+											if (str.charAt(i) == '八' || str.charAt(i) == '8') {
 												num[k] += "8";
 												aNum = true;
 											} else {
-												if (str.charAt(i) == '九') {
+												if (str.charAt(i) == '九' || str.charAt(i) == '9') {
 													num[k] += "9";
 													aNum = true;
 												} else {
-													if (str.charAt(i) == '十') {
-														if (num[k].length() > 0) {
-															char t = str
-																	.charAt(i + 1);
-															if (t != '一'
-																	&& t != '二'
-																	&& t != '三'
-																	&& t != '四'
-																	&& t != '五'
-																	&& t != '六'
-																	&& t != '七'
-																	&& t != '八'
-																	&& t != '九') {
-																num[k] += "0";
-															}
-														} else {
-															num[k] = "1";
-															char t = str
-																	.charAt(i + 1);
-															if (t != '一'
-																	&& t != '二'
-																	&& t != '三'
-																	&& t != '四'
-																	&& t != '五'
-																	&& t != '六'
-																	&& t != '七'
-																	&& t != '八'
-																	&& t != '九') {
-																num[k] = "10";
-															}
-														}
+													if (str.charAt(i) == '0'){
+														num[k] += "0";
 														aNum = true;
-													} else {
-														if (str.charAt(i) == '半') {
-															num[1] = "30";
-															break;
+													}
+													else{
+														if (str.charAt(i) == '十') {
+															if (num[k].length() > 0) {
+																char t = str
+																		.charAt(i + 1);
+																if (t != '一'
+																		&& t != '二'
+																		&& t != '三'
+																		&& t != '四'
+																		&& t != '五'
+																		&& t != '六'
+																		&& t != '七'
+																		&& t != '八'
+																		&& t != '九') {
+																	num[k] += "0";
+																}
+															} else {
+																num[k] = "1";
+																char t = str
+																		.charAt(i + 1);
+																if (t != '一'
+																		&& t != '二'
+																		&& t != '三'
+																		&& t != '四'
+																		&& t != '五'
+																		&& t != '六'
+																		&& t != '七'
+																		&& t != '八'
+																		&& t != '九') {
+																	num[k] = "10";
+																}
+															}
+															aNum = true;
+														} else {
+															if (str.charAt(i) == '半') {
+																num[1] = "30";
+																break;
+															}
+															if (aNum && k == 0) {
+																k++;
+																aNum = false;
+															}
+															if (aNum && k == 1)
+																break;
 														}
-														if (aNum && k == 0) {
-															k++;
-															aNum = false;
-														}
-														if (aNum && k == 1)
-															break;
 													}
 												}
 											}
