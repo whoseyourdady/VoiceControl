@@ -120,50 +120,50 @@ public class Str2DateTime {
 														aNum = true;
 													}
 													else{
-													if (str.charAt(i) == '十') {
-														if (num[k].length() > 0) {
-															char t = str
-																	.charAt(i + 1);
-															if (t != '一'
-																	&& t != '二'
-																	&& t != '三'
-																	&& t != '四'
-																	&& t != '五'
-																	&& t != '六'
-																	&& t != '七'
-																	&& t != '八'
-																	&& t != '九') {
-																num[k] += "0";
+														if (str.charAt(i) == '十') {
+															if (num[k].length() > 0) {
+																char t = str
+																		.charAt(i + 1);
+																if (t != '一'
+																		&& t != '二'
+																		&& t != '三'
+																		&& t != '四'
+																		&& t != '五'
+																		&& t != '六'
+																		&& t != '七'
+																		&& t != '八'
+																		&& t != '九') {
+																	num[k] += "0";
+																}
+															} else {
+																num[k] = "1";
+																char t = str
+																		.charAt(i + 1);
+																if (t != '一'
+																		&& t != '二'
+																		&& t != '三'
+																		&& t != '四'
+																		&& t != '五'
+																		&& t != '六'
+																		&& t != '七'
+																		&& t != '八'
+																		&& t != '九') {
+																	num[k] = "10";
+																}
 															}
+															aNum = true;
 														} else {
-															num[k] = "1";
-															char t = str
-																	.charAt(i + 1);
-															if (t != '一'
-																	&& t != '二'
-																	&& t != '三'
-																	&& t != '四'
-																	&& t != '五'
-																	&& t != '六'
-																	&& t != '七'
-																	&& t != '八'
-																	&& t != '九') {
-																num[k] = "10";
+															if (str.charAt(i) == '半') {
+																num[1] = "30";
+																break;
 															}
+															if (aNum && k == 0) {
+																k++;
+																aNum = false;
+															}
+															if (aNum && k == 1)
+																break;
 														}
-														aNum = true;
-													} else {
-														if (str.charAt(i) == '半') {
-															num[1] = "30";
-															break;
-														}
-														if (aNum && k == 0) {
-															k++;
-															aNum = false;
-														}
-														if (aNum && k == 1)
-															break;
-													}
 													}
 												}
 											}
@@ -186,9 +186,18 @@ public class Str2DateTime {
 				num[1] = tempMinute +"";
 				num[0] = hour +"" ;
 			}
-
 		}
 		if(str.contains("后")&&str.contains("小时")){
+			if(str.contains("半")){
+				int tempMinute = minute + 30;			
+				if(tempMinute >= 60){
+					num[1] = (tempMinute - 60) +"";
+					num[0] = (hour + 1)+"";
+				}else{
+					num[1] = tempMinute +"";
+					num[0] = hour +"" ;
+				}
+			}
 
 			int tempHour = Integer.parseInt(num[0])+ hour;			
 
@@ -288,12 +297,12 @@ public class Str2DateTime {
 		return sb.toString();
 
 	}
-	
-	
+
+
 	private static String formatTime(int x)
-    {
-	    String s=""+x;
-	    if(s.length()==1) s="0"+s;
-	    return s;
+	{
+		String s=""+x;
+		if(s.length()==1) s="0"+s;
+		return s;
 	}
 }

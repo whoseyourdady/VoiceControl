@@ -197,8 +197,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 				if (voiceEngine.equals("1")) {// EnableGoogleVoice
 					startVoiceRecognitionActivity();
+//					voiceString = "23点开会";
+//					updateListView(R.layout.chat_user, voiceString);
 				} else if (voiceEngine.equals("2")) {// EnableXunfeiVoice
 					showIatDialog();
+//					voiceString = "23点半开会";
+//					updateListView(R.layout.chat_user, voiceString);
 				}
 			}
 
