@@ -10,6 +10,7 @@
 		<TextView android:id="@+id/clock" android:layout_height="wrap_content"
 			android:layout_width="wrap_content" android:layout_centerHorizontal="true"
 			android:textSize="30dip" android:text="备忘提醒"
+			android:textColor="#165be8"
 			android:layout_centerVertical="true"></TextView>
 	</RelativeLayout>
 	<LinearLayout android:layout_width="match_parent"
@@ -22,10 +23,6 @@
 			android:layout_width="match_parent" android:layout_marginLeft="20dp"
 			android:layout_marginRight="20dp" android:layout_marginTop="20dp" android:layout_marginBottom="20dp"></ListView>
 	</LinearLayout>
-	<ImageButton android:layout_weight="0" android:id="@+id/clock_voice"
-		android:layout_width="wrap_content" android:src="@drawable/helper_voice"
-		android:layout_gravity="center|bottom" android:background="@android:color/transparent"
-		android:layout_height="wrap_content" android:paddingTop="5dp"></ImageButton>
 
 
 </LinearLayout>
