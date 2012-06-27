@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:dialogTitle="识别引擎选择"
+        android:entries="@array/entries_list_preference"
+        android:entryValues="@array/entriesvalue_list_preference"
+        android:key="voiceEngine"
+        android:defaultValue="1"
+        android:summary="请点击选择"
+        android:title="识别引擎选择" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="cb21"
+        android:summaryOff="关闭"
+        android:summaryOn="开启"
+        android:title="功能1" />
+
+</PreferenceScreen>
