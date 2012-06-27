@@ -4,18 +4,20 @@
 	android:descendantFocusability="blocksDescendants"
 	android:layout_height="wrap_content" android:paddingBottom="4dip"
 	android:paddingLeft="12dip" android:paddingRight="12dip">
-	<TextView android:layout_width="wrap_content" android:text="开会------------"
-		android:textSize="22dip" android:id="@+id/state"
-		android:layout_height="wrap_content" android:layout_alignParentLeft="true"
-		android:layout_marginLeft="28dp" android:layout_above="@+id/clockTime"></TextView>
 	<TextView android:layout_width="wrap_content" android:text="12:00"
 		android:textSize="15dip" android:id="@+id/clockTime"
+		android:textColor="#165be8"
 		android:layout_height="wrap_content" android:layout_below="@+id/deleteTime"
 		android:layout_alignLeft="@+id/state"></TextView>
-	<ImageButton android:layout_width="wrap_content"
-		android:id="@+id/deleteTime" android:src="@drawable/delete"
+	<TextView android:layout_height="wrap_content" android:id="@+id/state"
+		android:layout_width="wrap_content" android:text="开会------------"
+		android:textSize="22dip" android:layout_above="@+id/clockTime"
+		android:textColor="#165be8"
+		android:layout_alignParentLeft="true"></TextView>
+	<ImageButton android:id="@+id/deleteTime"
 		android:layout_height="wrap_content" android:background="@android:color/transparent"
-		android:paddingTop="12dip" android:layout_centerVertical="true"
-		android:layout_alignParentRight="true" android:layout_marginRight="37dp"></ImageButton>
+		android:src="@drawable/delete" android:paddingTop="12dip"
+		android:layout_width="wrap_content" android:layout_centerVertical="true"
+		android:layout_alignParentRight="true"></ImageButton>
 
 </RelativeLayout> 

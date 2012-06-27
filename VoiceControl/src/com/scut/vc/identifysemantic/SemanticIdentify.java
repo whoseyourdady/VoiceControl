@@ -70,7 +70,7 @@ public class SemanticIdentify {
 			if (identifyFinish)
 				break;
 		}
-		if (!(strSystemKey(strVoice).equals(""))) {
+		if (!(strSystemKey(strVoice).equals(""))&& type !=4) {
 			type = SETSYSTEM;
 		}
 

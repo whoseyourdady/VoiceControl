@@ -90,8 +90,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		callTarget.add(contactPerson2);
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		//Task task = new Task(Task.Search, "com.android.soundrecorder");
-		//Task task = new Task(Task.CALL, callTarget);
-		//Test(task);
+
+		Task task = new Task(Task.CALL, callTarget);
+		Test(task);
+
 
 	}
 

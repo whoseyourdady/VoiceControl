@@ -21,6 +21,7 @@
             android:gravity="center|top"
             android:text="语音小小助手"
             android:textSize="30dip"
+            android:textColor="#165be8"
             android:textStyle="bold" >
         </TextView>
     </RelativeLayout>
