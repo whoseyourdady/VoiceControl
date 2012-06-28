@@ -139,15 +139,6 @@ public class AlarmService extends Service{
 		super.onDestroy();
 		AlarmManager am = (AlarmManager)getSystemService
 		(Service.ALARM_SERVICE);
-		
-		
-		
-		//Intent it = new Intent(this,MainActivity.class);
-		
-		
-		
-//		PendingIntent pi = PendingIntent.getActivity(this, 0, it, 0);
-//		am.cancel(pi);
 
 	}
 

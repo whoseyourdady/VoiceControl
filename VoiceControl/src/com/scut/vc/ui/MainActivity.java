@@ -35,6 +35,7 @@ import com.scut.vc.utility.Contact;
 import com.scut.vc.utility.DeviceControl;
 import com.scut.vc.utility.Task;
 import com.scut.vc.utility.WebSearch;
+import com.scut.vc.utility.Contact.ContactPerson;
 import com.scut.vc.xflib.ChatAdapter;
 import com.scut.vc.xflib.ChatEng;
 
@@ -71,6 +72,32 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		inital();
 		Thread thread = new Thread((mThread = new IdentifyThread(this)));
 		thread.start();
+		
+
+
+		/**
+		 * 测度代码;
+		 */
+		ArrayList<Contact.ContactPerson> callTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
+		Contact.ContactPerson contactPerson1 = mContact.new ContactPerson(
+				"中国移动A", "10086");
+		
+		Contact.ContactPerson contactPerson2 = mContact.new ContactPerson(
+				"中国移动B", "13800138000");
+		
+		callTarget.add(contactPerson1);
+		
+		callTarget.add(contactPerson2);
+		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
+		//Task task = new Task(Task.Search, "com.android.soundrecorder");
+
+		//Task task = new Task(Task.CALL, callTarget);
+		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
+		//Test(task);
+		
+		voiceString = "大闹天宫闹钟";
+
+
 	}
 
 	@Override
@@ -156,23 +183,26 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		 */
 		ib.setOnClickListener(new OnClickListener() {
 
-	
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
 				// 获取语音引擎选项的数据
-				//下一句需做版本上的兼容
-//				SharedPreferences sharedata1 = getSharedPreferences(
-//						"voiceEngine", MODE_WORLD_READABLE | MODE_MULTI_PROCESS);
+				// 下一句需做版本上的兼容
+				// SharedPreferences sharedata1 = getSharedPreferences(
+				// "voiceEngine", MODE_WORLD_READABLE | MODE_MULTI_PROCESS);
 				SharedPreferences sharedata1 = getSharedPreferences(
-						"voiceEngine", MODE_WORLD_READABLE );
+						"voiceEngine", MODE_WORLD_READABLE);
 				String voiceEngine = sharedata1.getString("voiceEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
 				System.out.println("voiceEngine = " + voiceEngine);
 
 				if (voiceEngine.equals("1")) {// EnableGoogleVoice
 					startVoiceRecognitionActivity();
-				} else if (voiceEngine.equals("2")) {//EnableXunfeiVoice 
+//					voiceString = "23点开会";
+//					updateListView(R.layout.chat_user, voiceString);
+				} else if (voiceEngine.equals("2")) {// EnableXunfeiVoice
 					showIatDialog();
+//					voiceString = "23点半开会";
+//					updateListView(R.layout.chat_user, voiceString);
 				}
 			}
 
@@ -193,7 +223,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			switch (task.getTaskID()) {
 			case Task.CALL: {
 				@SuppressWarnings("unchecked")
-				List<Contact.ContactPerson> callList = (List<Contact.ContactPerson>) task
+				ArrayList<Contact.ContactPerson> callList = (ArrayList<Contact.ContactPerson>) task
 						.getTaskParam();
 				if (0 == callList.size()) {
 					mAppManager.Execute("com.android.contacts");
@@ -201,12 +231,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					String phoneNum = callList.get(0).GetNumber();
 					mContact.CallPerson(phoneNum);
 				} else if (1 < callList.size()) {
-
+					ShowSelectDialog(callList, task);
 				}
 			}
 				break;
 			case Task.SendMessage: {
-
+				String number = (String) task.getTaskParam();
+				mContact.SendMsg(number, "ooo");
 			}
 				break;
 			case Task.OpenApp: {
@@ -365,10 +396,11 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	 * @param items
 	 * @param task
 	 */
-	public void ShowSelectDialog(final List<String> list, final Task task) {
+	public void ShowSelectDialog(final ArrayList<Contact.ContactPerson> list,
+			final Task task) {
 		final String[] items = new String[list.size()];
 		for (int n = 0; n < list.size(); n++) {
-			items[n] = list.get(n);
+			items[n] = ((Contact.ContactPerson) list.get(n)).GetName();
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("请选择").setItems(items,
@@ -376,7 +408,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						Task _task = new Task(task.getTaskID(), items[which]);
+						ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson> ();
+						_list.add(list.get(which));
+						Task _task = new Task(task.getTaskID(), _list);
 						Message msg = new Message();
 						msg.obj = _task;
 						mhandler.sendMessage(msg);
@@ -385,6 +419,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 		AlertDialog dialog = builder.create();
 		dialog.show();
+
 	}
 
 	/**
@@ -408,5 +443,11 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		pd = null;
 		mThread = null;// 语义识别的多线程
 		super.onDestroy();
+	}
+
+	private void Test(Task task) {
+		Message msg = new Message();
+		msg.obj = task;
+		mhandler.sendMessage(msg);
 	}
 }
