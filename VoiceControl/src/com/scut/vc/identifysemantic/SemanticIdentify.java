@@ -2,10 +2,9 @@ package com.scut.vc.identifysemantic;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.util.Log;
 
-import com.scut.vc.ui.MainActivity;
 import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.AppsManager.Package_Info;
 import com.scut.vc.utility.Contact;
@@ -33,7 +32,7 @@ public class SemanticIdentify {
 			"airplanemode" };
 
 	static String mKeyWord[][] = { { "打开", "运行", "启动" },// 打开应用的关键字
-			{ "打电话", "打电话给", "电话", "拨打", "打给", "接通" }, // 打电话的关键字
+			{ "打电话给", "打电话", "电话", "拨打", "打给", "接通" }, // 打电话的关键字
 			{ "发短信给", "短信" }, // 发短信的关键字
 			{ "什么", "搜索", "查找" }, // 网络搜索的关键字
 			{ "闹钟", "提醒", "点钟", "点", "小时", "分钟" }, // 设置提醒的关键字
@@ -45,10 +44,8 @@ public class SemanticIdentify {
 		inital();// 初始化
 	}
 
+	@SuppressLint({ "ParserError", "ParserError" })
 	public Task Identify(String strVoice) {
-
-		Command command;
-		command = new Command();
 
 		Task task = null;// 一个返回任务的Task引用
 
@@ -71,7 +68,7 @@ public class SemanticIdentify {
 			if (identifyFinish)
 				break;
 		}
-		if (!(strSystemKey(strVoice).equals(""))&& type !=4) {
+		if (!(strSystemKey(strVoice).equals("")) && type != 4) {
 			type = SETSYSTEM;
 		}
 
@@ -82,17 +79,21 @@ public class SemanticIdentify {
 					.getInstalledAppsList();
 			int appsSize = appsList.size();
 			double maxScore = 0;
-			int flag = -1;//标识哪个是需打开程序
+			int flag = -1;// 标识哪个是需打开程序
 			System.out.println("strVoice= " + strVoice);
+			/*
+			 * 此处由于没有完善存在多个匹配项的情况，所以先假设存在一个情况
+			 */
+			String strResult = "";
 			for (int i = 0; i < appsSize; i++) {
 				Package_Info pi = appsList.get(i);
-				String strAppName = pi.mAppName;		
-				double score = strPYScore(strVoice, strAppName);
+				String strAppName = pi.mAppName;
+				double score = strAppScore(strVoice, strAppName);
 				System.out.println("1 = " + pi.mAppName);
 				System.out.println("2 = " + pi.mPackageName);
 				System.out.println("score=" + score);
 				if (score >= maxScore) {
-					command.mAppName = strAppName;
+					strResult = strAppName;
 					flag = i;
 					maxScore = score;
 					System.out.println("maxScore=" + maxScore + "  = "
@@ -103,7 +104,7 @@ public class SemanticIdentify {
 				System.out.println("没有对应的命令！");
 				task = new Task(Task.IdentifyError, null);
 			} else {
-				System.out.println("打开应用" + command.mAppName);
+				System.out.println("打开应用" + strResult);
 				String packName = ((Package_Info) appsList.get(flag)).mPackageName;
 				task = new Task(Task.OpenApp, packName);
 			}
@@ -111,21 +112,23 @@ public class SemanticIdentify {
 			break;
 		}
 		case CALL: {
-			ArrayList<Contact.ContactPerson> contactPersonList = new ArrayList<Contact.ContactPerson>();
-			contactPersonList = mContact.GetPersonList();
+			ArrayList<Contact.ContactPerson> contactPersonList = mContact
+					.GetPersonList();
 
 			ArrayList<Contact.ContactPerson> callTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
 
 			// 判断strVoice是否含数字串
 			// 如果含有数字串，则拨打该数字串
 			// 如果不含有数字串，则寻找联系人
-			String strNum;
+			String strName = "";
+			String strNum = "";
 			// System.out.println("!!!!!!!");
 			double maxScore = 0;
+			// strVoice中含有电话号码的情况
 			if (!(strNum = containNum(strVoice)).equals("")) {
-				command.mCallNum = strNum;
-			} else {
-				// System.out.println(strVoice);
+				// 既然strVoice中含有电话号码，而且以该电话号码进行拨号，所以评分maxScore应为最高评分值1
+				maxScore = 1;
+				// 获取该电话号码对应的联系人名字，如果联系人中不存在该号码则以该号码为联系人名称
 				for (int i = 0; i < contactPersonList.size(); i++) {
 					Contact.ContactPerson contactPerson = contactPersonList
 							.get(i);
@@ -133,12 +136,58 @@ public class SemanticIdentify {
 							&& contactPerson.GetNumber() != null) {
 						// System.out.println(contactPerson.mContactsName);
 						// System.out.println(contactPerson.mContactsNumber);
-						double score = strPYScore(strVoice,
+						if (contactPerson.GetNumber().equals(strNum)) {
+							strName = contactPerson.GetName();
+						}
+					}
+				}
+				// 如果不存在联系人，则以号码为联系人
+				if (strName.equals("")) {
+					strName = strNum;
+				}
+				Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
+						strName, strNum);
+				callTarget.add(tempContactPerson);
+			}
+			// strVoice中不含有电话号码的情况，此时搜索可能的联系人号码
+			// 此时可能存在多个联系人名称的评分相等的情况，那么就以一个列表列出来
+			else {
+				// System.out.println("strVoice = " + strVoice);
+				for (int i = 0; i < contactPersonList.size(); i++) {
+					Contact.ContactPerson contactPerson = contactPersonList
+							.get(i);
+					if (contactPerson.GetName() != null
+							&& contactPerson.GetNumber() != null) {
+						double score = strContactScore(strVoice,
 								contactPerson.GetName());
-						// System.out.println(score);
-						if (score >= maxScore) {
-							command.mCallNum = contactPerson.GetNumber();
-							command.mContactName = contactPerson.GetName();
+						// 评分相等的情况，那么就把评分相当的联系人全部加入到拨号列表中
+						// System.out.println(contactPerson.GetName()
+						// +"         " + contactPerson.GetNumber() +
+						// "           "+score);
+						if (score == maxScore) {
+							strNum = contactPerson.GetNumber();
+							strName = contactPerson.GetName();
+							Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
+									strName, strNum);
+							callTarget.add(tempContactPerson);
+							// System.out.println("size =  " +
+							// callTarget.size());
+							/*
+							 * for (int j = 0; j < callTarget.size(); j++) {
+							 * System.out.println(callTarget.get(j).GetName()
+							 * +"         " + callTarget.get(j).GetNumber()
+							 * +"maxScore:    " + maxScore); }
+							 */
+
+						}
+						// 有新的最优评分的情况，那么就把新的评分最优的联系人加入到拨号列表中
+						if (score > maxScore) {
+							callTarget.clear();// 清楚旧的列表
+							strNum = contactPerson.GetNumber();
+							strName = contactPerson.GetName();
+							Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
+									strName, strNum);
+							callTarget.add(tempContactPerson);
 							maxScore = score;
 						}
 					}
@@ -146,14 +195,31 @@ public class SemanticIdentify {
 				}
 			}
 
-			if (maxScore == 0) {
-				System.out.println("没有对应的命令");
+			// System.out.println("结果预留：  "+ callTarget.get(0).GetName() +
+			// "          " + callTarget.get(0).GetNumber());
+
+			// callTarget在上面的执行过程中至少会被赋有一个值，故不会出现越界错误
+			// 同时，此处的if判断是为了确认返回有效的识别结果
+			// 如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可呼叫的联系人，出错
+			// 如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，故没有对应可呼叫的联系人，出错
+			if (maxScore == 0
+					|| containNum(callTarget.get(0).GetNumber()) == "") {
+				System.out.println("没有对应的call命令");
 				task = new Task(Task.IdentifyError, null);
 			} else {
-				System.out.println("拨打电话" + command.mCallNum);
-				Contact.ContactPerson contactPerson = mContact.new ContactPerson(command.mContactName
-						, command.mCallNum);
-				callTarget.add(contactPerson);
+				System.out.println("size = " + callTarget.size());
+				for (int i = 0; i < callTarget.size(); i++) {
+					System.out.println("结果：         拨打电话"
+							+ callTarget.get(i).GetName());
+					System.out.println("结果：         拨打电话"
+							+ callTarget.get(i).GetNumber());
+				}
+				/*
+				 * //for test callTarget.clear(); strNum = "13592799412";
+				 * strName = "张"; Contact.ContactPerson tempContactPerson =
+				 * mContact.new ContactPerson( strName, strNum);
+				 * callTarget.add(tempContactPerson);
+				 */
 				task = new Task(Task.CALL, callTarget);
 			}
 
@@ -161,50 +227,128 @@ public class SemanticIdentify {
 		}
 
 		case MESSAGE: {
-			ArrayList<Contact.ContactPerson> contactPersonList = new ArrayList<Contact.ContactPerson>();
-			contactPersonList = mContact.GetPersonList();
+			ArrayList<Contact.ContactPerson> contactPersonList = mContact
+					.GetPersonList();
 
-			ArrayList<Contact.ContactPerson> messageTarget = new ArrayList<Contact.ContactPerson>();// 发信息列表
+			ArrayList<Contact.ContactPerson> msgTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
 
+			// 判断strVoice是否含数字串
+			// 如果含有数字串，则拨打该数字串
+			// 如果不含有数字串，则寻找联系人
+			String strName = "";
+			String strNum = "";
+			// System.out.println("!!!!!!!");
 			double maxScore = 0;
-			System.out.println(strVoice);
-			for (int i = 0; i < contactPersonList.size(); i++) {
-				Contact.ContactPerson contactPerson = contactPersonList.get(i);
-				if (contactPerson.GetName() != null
-						&& contactPerson.GetNumber() != null) {
-					System.out.println(contactPerson.GetName());
-					System.out.println(contactPerson.GetNumber());
-					double score = strPYScore(strVoice, contactPerson.GetName());
-					System.out.println(score);
-					if (score >= maxScore) {
-						command.mMsgNum = contactPerson.GetNumber();
-						command.mContactName = contactPerson.GetName();
-						maxScore = score;
+			// strVoice中含有电话号码的情况
+			if (!(strNum = containNum(strVoice)).equals("")) {
+				// 既然strVoice中含有电话号码，而且以该电话号码进行拨号，所以评分maxScore应为最高评分值1
+				maxScore = 1;
+				// 获取该电话号码对应的联系人名字，如果联系人中不存在该号码则以该号码为联系人名称
+				for (int i = 0; i < contactPersonList.size(); i++) {
+					Contact.ContactPerson contactPerson = contactPersonList
+							.get(i);
+					if (contactPerson.GetName() != null
+							&& contactPerson.GetNumber() != null) {
+						// System.out.println(contactPerson.mContactsName);
+						// System.out.println(contactPerson.mContactsNumber);
+						if (contactPerson.GetNumber().equals(strNum)) {
+							strName = contactPerson.GetName();
+						}
 					}
 				}
-				System.out.println(maxScore);
+				// 如果不存在联系人，则以号码为联系人
+				if (strName.equals("")) {
+					strName = strNum;
+				}
+				Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
+						strName, strNum);
+				msgTarget.add(tempContactPerson);
 			}
-			if (maxScore == 0) {
-				System.out.println("没有对应的命令");
+			// strVoice中不含有电话号码的情况，此时搜索可能的联系人号码
+			// 此时可能存在多个联系人名称的评分相等的情况，那么就以一个列表列出来
+			else {
+				// System.out.println("strVoice = " + strVoice);
+				for (int i = 0; i < contactPersonList.size(); i++) {
+					Contact.ContactPerson contactPerson = contactPersonList
+							.get(i);
+					if (contactPerson.GetName() != null
+							&& contactPerson.GetNumber() != null) {
+						double score = strContactScore(strVoice,
+								contactPerson.GetName());
+						// 评分相等的情况，那么就把评分相当的联系人全部加入到短信列表中
+						// System.out.println(contactPerson.GetName()
+						// +"         " + contactPerson.GetNumber() +
+						// "           "+score);
+						if (score == maxScore) {
+							strNum = contactPerson.GetNumber();
+							strName = contactPerson.GetName();
+							Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
+									strName, strNum);
+							msgTarget.add(tempContactPerson);
+							// System.out.println("size =  " +
+							// callTarget.size());
+							/*
+							 * for (int j = 0; j < callTarget.size(); j++) {
+							 * System.out.println(callTarget.get(j).GetName()
+							 * +"         " + callTarget.get(j).GetNumber()
+							 * +"maxScore:    " + maxScore); }
+							 */
+
+						}
+						// 有新的最优评分的情况，那么就把新的评分最优的联系人加入到短信列表中
+						if (score > maxScore) {
+							msgTarget.clear();// 清楚旧的列表
+							strNum = contactPerson.GetNumber();
+							strName = contactPerson.GetName();
+							Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
+									strName, strNum);
+							msgTarget.add(tempContactPerson);
+							maxScore = score;
+						}
+					}
+					// System.out.println(maxScore);
+				}
+			}
+
+			// System.out.println("结果预留：  "+ callTarget.get(0).GetName() +
+			// "          " + callTarget.get(0).GetNumber());
+
+			// callTarget在上面的执行过程中至少会被赋有一个值，故不会出现越界错误
+			// 同时，此处的if判断是为了确认返回有效的识别结果
+			// 如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可短信的联系人，出错
+			// 如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，故没有对应可短信的联系人，出错
+			if (maxScore == 0 || containNum(msgTarget.get(0).GetNumber()) == "") {
+				System.out.println("没有对应的SendMessage命令");
 				task = new Task(Task.IdentifyError, null);
 			} else {
-				System.out.println("发短信" + command.mMsgNum);
-				Contact.ContactPerson contactPerson = mContact.new ContactPerson(
-						command.mCallNum, command.mContactName);
-				messageTarget.add(contactPerson);
-				task = new Task(Task.SendMessage, command.mMsgNum);
+				System.out.println("size = " + msgTarget.size());
+				for (int i = 0; i < msgTarget.size(); i++) {
+					System.out.println("结果：         发送短信"
+							+ msgTarget.get(i).GetName());
+					System.out.println("结果：         发送短信"
+							+ msgTarget.get(i).GetNumber());
+				}
+				/*
+				 * //for test callTarget.clear(); strNum = "13592799412";
+				 * strName = "张"; Contact.ContactPerson tempContactPerson =
+				 * mContact.new ContactPerson( strName, strNum);
+				 * callTarget.add(tempContactPerson);
+				 */
+				task = new Task(Task.SendMessage, msgTarget);
 			}
+
 			break;
 		}
+
 		case SEARCH: {
 			String strWwwEngine = "http://www.baidu.com/s?wd=";// 桌面版的搜索引擎
 			String strWapEngine = "http://m.baidu.com/s?word=";// 移动版的搜索引擎
-			String strSearch = strVoice;// 要搜索的关键字
-			System.out.println("上网搜索" + strWapEngine + strSearch);
+			System.out.println("上网搜索" + strWapEngine + strVoice);
 			// command.mSerKeyWord = strSearch;
 			task = new Task(Task.Search, strVoice);
 			break;
 		}
+
 		case SETNOTIFICATION: {
 			String time[] = getTimeFromStr(strVoice);
 			boolean delay;
@@ -216,30 +360,27 @@ public class SemanticIdentify {
 			} else {
 				System.out.println("设置备忘:" + time[0] + ":" + time[1] + "事件："
 						+ strVoice);
+				task = new Task(Task.SetAlarm, strVoice);
 
-				Log.v("Work", "hour " + time[0] + " minute " + time[1]);
-
-				task = new Task(Task.SetAlarm,  strVoice);
 			}
-			//task = new Task(Task.SetAlarm,  strVoice);
-			
-			break;
+
 		}
+			break;
 		case SETSYSTEM: {
 			// {"设置", "打开", "关闭", "关上", "关掉"},
-			command.mHardwareName = strSystemKey(strVoice);
-			if (strVoice.contains("设置") || strVoice.contains("打开")) {// 打开系统硬件
-				command.mHardware = true;
-			} else {// 关闭系统硬件
-				command.mHardware = false;
-			}
-			if (command.mHardwareName.equals("")) {
+			String strHW = strSystemKey(strVoice);
+			/*
+			 * if (strVoice.contains("设置") || strVoice.contains("打开")) {//
+			 * 打开系统硬件 command.mHardware = true; } else {// 关闭系统硬件
+			 * command.mHardware = false; }
+			 */
+			if (strHW.equals("")) {
 				System.out.println("没有对应的命令");
 				task = new Task(Task.IdentifyError, null);
 			} else {
 				System.out.println("strVoice = " + strVoice);
-				System.out.println("hardware = " + command.mHardwareName);
-				task = new Task(Task.SwitchOnDevice, command.mHardwareName);
+				System.out.println("hardware = " + strHW);
+				task = new Task(Task.SwitchOnDevice, strHW);
 			}
 			// return command;
 			break;
@@ -283,19 +424,70 @@ public class SemanticIdentify {
 		}
 	}
 
-	public static double strPYScore(String base, String var) {
-		int denominator = var.length();// 得分的分母
+	// 拼音得分函数，采用了比较拼音首字母的方法来比较得分
+	public static double strAppScore(String base, String var) {
+		String baseHead = CnToSpell.getPinYinHeadChar(base).toLowerCase();// base变量的拼音首字母
+		String varHead = CnToSpell.getPinYinHeadChar(var).toLowerCase();// var变量的拼音首字母
+		int denominator = varHead.length();// 得分的分母
 		int numerator = 0;// 得分的分子
-		base = base.toLowerCase();
-		String PY1 = CnToSpell.getPingYin(base);// 把str1转化为拼音的字符串
+
 		for (int i = 0; i < denominator; i++) {
-			if (PY1.contains(CnToSpell.getPingYin(var.substring(i, i + 1)
-					.toLowerCase()))) {
+			if (baseHead.contains(varHead.substring(i, i + 1))) {
 				numerator++;
-				// System.out.println("PY1="+PY1);
 			}
 		}
 		double score = numerator * 1.0 / denominator;
+		return score;
+	}
+
+	public static double strContactScore(String base, String var) {
+		int denominator = var.length();// 得分的分母
+		double numerator = 0;// 得分的分子
+		boolean containEnglish = false;
+		if (var != null) {
+			// 判断字符串中是否含有英文字母
+			for (int i = 0; i < denominator; i++) {
+				if ((CnToSpell.getCnASCII(var.substring(0, 1)).compareTo(
+						CnToSpell.getCnASCII("z")) <= 0)
+						&& (CnToSpell.getCnASCII(var.substring(0, 1))
+								.compareTo(CnToSpell.getCnASCII("A")) >= 0)) {
+					containEnglish = true;
+				}
+			}
+			// System.out.println("containEngilsh  =   " + containEnglish);
+			// 1、字符串中不含有英文字符的情况
+			if (!containEnglish) {
+				String PY1 = CnToSpell.getPingYin(base).toLowerCase();// 把str1转化为拼音的字符串
+				// System.out.println("PY1=   " + PY1);
+				for (int i = 0; i < denominator; i++) {
+					String PY2 = CnToSpell.getPingYin(var.substring(i, i + 1)
+							.toLowerCase());
+					if (PY1.contains(PY2)) {
+						// System.out.println(CnToSpell.getPingYin(var.substring(i,i+1).toLowerCase()));
+						numerator += 1;
+						if (PY2.length() == 1) {
+							numerator -= 0.4;
+						}
+						if (PY2.length() == 2) {
+							numerator -= 0.2;
+						}
+					}
+				}
+			}
+			// 2、字符串中含有英文字符的情况
+			else {
+				// 当字符串中含有英文字符时的匹配思路:
+				// 因为var变量为联系人名称，所以此时var中只含有英文字符串
+				// 所以只需看看var中的英文字符串在base中出现了的程度(以评分来衡量)即可
+				String PY1 = base.toLowerCase();
+				for (int i = 0; i < denominator; i++) {
+					if (PY1.contains(var.substring(i, i + 1).toLowerCase())) {
+						numerator += 1;
+					}
+				}
+			}
+		}
+		double score = numerator / denominator;
 		return score;
 	}
 
@@ -363,7 +555,8 @@ public class SemanticIdentify {
 				num[k] += "1";
 				aNum = true;
 			} else {
-				if (str.charAt(i) == '二' || str.charAt(i) == '两' || str.charAt(i) == '2') {
+				if (str.charAt(i) == '二' || str.charAt(i) == '两'
+						|| str.charAt(i) == '2') {
 					num[k] += "2";
 					aNum = true;
 				} else {
@@ -379,31 +572,35 @@ public class SemanticIdentify {
 								num[k] += "4";
 								aNum = true;
 							} else {
-								if (str.charAt(i) == '五' || str.charAt(i) == '5') {
+								if (str.charAt(i) == '五'
+										|| str.charAt(i) == '5') {
 									num[k] += "5";
 									aNum = true;
 								} else {
-									if (str.charAt(i) == '六' || str.charAt(i) == '6') {
+									if (str.charAt(i) == '六'
+											|| str.charAt(i) == '6') {
 										num[k] += "6";
 										aNum = true;
 									} else {
-										if (str.charAt(i) == '七' || str.charAt(i) == '7') {
+										if (str.charAt(i) == '七'
+												|| str.charAt(i) == '7') {
 											num[k] += "7";
 											aNum = true;
 										} else {
-											if (str.charAt(i) == '八' || str.charAt(i) == '8') {
+											if (str.charAt(i) == '八'
+													|| str.charAt(i) == '8') {
 												num[k] += "8";
 												aNum = true;
 											} else {
-												if (str.charAt(i) == '九' || str.charAt(i) == '9') {
+												if (str.charAt(i) == '九'
+														|| str.charAt(i) == '9') {
 													num[k] += "9";
 													aNum = true;
 												} else {
-													if (str.charAt(i) == '0'){
+													if (str.charAt(i) == '0') {
 														num[k] += "0";
 														aNum = true;
-													}
-													else{
+													} else {
 														if (str.charAt(i) == '十') {
 															if (num[k].length() > 0) {
 																char t = str
@@ -465,26 +662,6 @@ public class SemanticIdentify {
 			num[0] = "";
 		}
 		return num;
-	}
-
-	public class Command {
-
-		String mCallNum;
-
-		String mAppName;
-
-		String mMsgNum;
-
-		String mSerKeyWord;
-
-		String mNotificationTime;
-
-		String mContactName;
-
-		boolean mHardware;
-
-		String mHardwareName;
-
 	}
 
 	private void inital() {
