@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:background="@android:color/transparent"
-        android:src="@drawable/helper_voice" >
+        android:src="@drawable/voice_helper_sl" >
     </ImageButton>
 
 </LinearLayout><!--
