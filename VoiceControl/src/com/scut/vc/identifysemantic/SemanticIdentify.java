@@ -230,7 +230,7 @@ public class SemanticIdentify {
 			ArrayList<Contact.ContactPerson> contactPersonList = mContact
 					.GetPersonList();
 
-			ArrayList<Contact.ContactPerson> callTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
+			ArrayList<Contact.ContactPerson> msgTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
 
 			// 判断strVoice是否含数字串
 			// 如果含有数字串，则拨打该数字串
@@ -262,7 +262,7 @@ public class SemanticIdentify {
 				}
 				Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
 						strName, strNum);
-				callTarget.add(tempContactPerson);
+				msgTarget.add(tempContactPerson);
 			}
 			// strVoice中不含有电话号码的情况，此时搜索可能的联系人号码
 			// 此时可能存在多个联系人名称的评分相等的情况，那么就以一个列表列出来
@@ -284,7 +284,7 @@ public class SemanticIdentify {
 							strName = contactPerson.GetName();
 							Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
 									strName, strNum);
-							callTarget.add(tempContactPerson);
+							msgTarget.add(tempContactPerson);
 							// System.out.println("size =  " +
 							// callTarget.size());
 							/*
@@ -297,12 +297,12 @@ public class SemanticIdentify {
 						}
 						// 有新的最优评分的情况，那么就把新的评分最优的联系人加入到短信列表中
 						if (score > maxScore) {
-							callTarget.clear();// 清楚旧的列表
+							msgTarget.clear();// 清楚旧的列表
 							strNum = contactPerson.GetNumber();
 							strName = contactPerson.GetName();
 							Contact.ContactPerson tempContactPerson = mContact.new ContactPerson(
 									strName, strNum);
-							callTarget.add(tempContactPerson);
+							msgTarget.add(tempContactPerson);
 							maxScore = score;
 						}
 					}
@@ -317,17 +317,16 @@ public class SemanticIdentify {
 			// 同时，此处的if判断是为了确认返回有效的识别结果
 			// 如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可短信的联系人，出错
 			// 如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，故没有对应可短信的联系人，出错
-			if (maxScore == 0
-					|| containNum(callTarget.get(0).GetNumber()) == "") {
+			if (maxScore == 0 || containNum(msgTarget.get(0).GetNumber()) == "") {
 				System.out.println("没有对应的SendMessage命令");
 				task = new Task(Task.IdentifyError, null);
 			} else {
-				System.out.println("size = " + callTarget.size());
-				for (int i = 0; i < callTarget.size(); i++) {
+				System.out.println("size = " + msgTarget.size());
+				for (int i = 0; i < msgTarget.size(); i++) {
 					System.out.println("结果：         发送短信"
-							+ callTarget.get(i).GetName());
+							+ msgTarget.get(i).GetName());
 					System.out.println("结果：         发送短信"
-							+ callTarget.get(i).GetNumber());
+							+ msgTarget.get(i).GetNumber());
 				}
 				/*
 				 * //for test callTarget.clear(); strNum = "13592799412";
@@ -335,7 +334,7 @@ public class SemanticIdentify {
 				 * mContact.new ContactPerson( strName, strNum);
 				 * callTarget.add(tempContactPerson);
 				 */
-				task = new Task(Task.SendMessage, callTarget);
+				task = new Task(Task.SendMessage, msgTarget);
 			}
 
 			break;
@@ -349,6 +348,7 @@ public class SemanticIdentify {
 			task = new Task(Task.Search, strVoice);
 			break;
 		}
+
 		case SETNOTIFICATION: {
 			String time[] = getTimeFromStr(strVoice);
 			boolean delay;
@@ -362,10 +362,8 @@ public class SemanticIdentify {
 						+ strVoice);
 				task = new Task(Task.SetAlarm, strVoice);
 			}
-			
-
-			break;
 		}
+			break;
 		case SETSYSTEM: {
 			// {"设置", "打开", "关闭", "关上", "关掉"},
 			String strHW = strSystemKey(strVoice);
@@ -555,7 +553,8 @@ public class SemanticIdentify {
 				num[k] += "1";
 				aNum = true;
 			} else {
-				if (str.charAt(i) == '二' || str.charAt(i) == '两' || str.charAt(i) == '2') {
+				if (str.charAt(i) == '二' || str.charAt(i) == '两'
+						|| str.charAt(i) == '2') {
 					num[k] += "2";
 					aNum = true;
 				} else {
@@ -571,31 +570,35 @@ public class SemanticIdentify {
 								num[k] += "4";
 								aNum = true;
 							} else {
-								if (str.charAt(i) == '五' || str.charAt(i) == '5') {
+								if (str.charAt(i) == '五'
+										|| str.charAt(i) == '5') {
 									num[k] += "5";
 									aNum = true;
 								} else {
-									if (str.charAt(i) == '六' || str.charAt(i) == '6') {
+									if (str.charAt(i) == '六'
+											|| str.charAt(i) == '6') {
 										num[k] += "6";
 										aNum = true;
 									} else {
-										if (str.charAt(i) == '七' || str.charAt(i) == '7') {
+										if (str.charAt(i) == '七'
+												|| str.charAt(i) == '7') {
 											num[k] += "7";
 											aNum = true;
 										} else {
-											if (str.charAt(i) == '八' || str.charAt(i) == '8') {
+											if (str.charAt(i) == '八'
+													|| str.charAt(i) == '8') {
 												num[k] += "8";
 												aNum = true;
 											} else {
-												if (str.charAt(i) == '九' || str.charAt(i) == '9') {
+												if (str.charAt(i) == '九'
+														|| str.charAt(i) == '9') {
 													num[k] += "9";
 													aNum = true;
 												} else {
-													if (str.charAt(i) == '0'){
+													if (str.charAt(i) == '0') {
 														num[k] += "0";
 														aNum = true;
-													}
-													else{
+													} else {
 														if (str.charAt(i) == '十') {
 															if (num[k].length() > 0) {
 																char t = str
@@ -657,26 +660,6 @@ public class SemanticIdentify {
 			num[0] = "";
 		}
 		return num;
-	}
-
-	public class Command {
-
-		String mCallNum;
-
-		String mAppName;
-
-		String mMsgNum;
-
-		String mSerKeyWord;
-
-		String mNotificationTime;
-
-		String mContactName;
-
-		boolean mHardware;
-
-		String mHardwareName;
-
 	}
 
 	private void inital() {
