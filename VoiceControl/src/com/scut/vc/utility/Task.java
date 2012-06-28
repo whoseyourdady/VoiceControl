@@ -35,6 +35,10 @@ public class Task {
 		mTaskParam = param;
 	}
 	
+	public Task() {
+		mTaskId = Task.IdentifyError;
+	}
+	
 
 	
 	public int getTaskID() {
