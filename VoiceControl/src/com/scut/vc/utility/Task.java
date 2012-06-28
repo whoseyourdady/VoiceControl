@@ -35,6 +35,8 @@ public class Task {
 		mTaskParam = param;
 	}
 	
+
+	
 	public int getTaskID() {
 		return mTaskId;
 	}
@@ -50,5 +52,4 @@ public class Task {
 	public void setTaskParam(Object taskParam) {
 		mTaskParam = taskParam;
 	}
-
 }
