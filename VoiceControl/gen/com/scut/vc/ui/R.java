@@ -61,8 +61,9 @@ public final class R {
         public static final int mywb=0x7f020014;
         public static final int titlebar_bg=0x7f020015;
         public static final int user=0x7f020016;
-        public static final int wave=0x7f020017;
-        public static final int window_bg=0x7f020018;
+        public static final int voice_helper_sl=0x7f020017;
+        public static final int wave=0x7f020018;
+        public static final int window_bg=0x7f020019;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f0a0003;
