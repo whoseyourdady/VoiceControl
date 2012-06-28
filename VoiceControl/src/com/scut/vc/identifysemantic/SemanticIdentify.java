@@ -361,7 +361,9 @@ public class SemanticIdentify {
 				System.out.println("设置备忘:" + time[0] + ":" + time[1] + "事件："
 						+ strVoice);
 				task = new Task(Task.SetAlarm, strVoice);
+
 			}
+
 		}
 			break;
 		case SETSYSTEM: {

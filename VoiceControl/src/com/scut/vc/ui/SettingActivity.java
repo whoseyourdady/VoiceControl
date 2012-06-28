@@ -33,10 +33,16 @@ public class SettingActivity extends PreferenceActivity {
 		// 读取数据，并提交，用于其他activity进行数据的读取
 		final SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		String selectEngine = sp.getString("voiceEngine", "error~~"); // list1是控件的ID
-		Editor sharedata = getSharedPreferences("voiceEngine", 0).edit();
-		sharedata.putString("voiceEngine", selectEngine);//voiceEngine是给外部activity的数据id
-		sharedata.commit();
+		//获取语音识别引擎选项的数据
+		String voicetEngine = sp.getString("voiceEngine", "error~~"); // list1是控件的ID
+		Editor sharedata_voice = getSharedPreferences("voiceEngine", 0).edit();
+		sharedata_voice.putString("voiceEngine", voicetEngine);//voiceEngine是给外部activity的数据id
+		sharedata_voice.commit();
+		//获取搜索引擎选项的数据
+		String searchEngine = sp.getString("searchEngine", "error~~"); // list1是控件的ID
+		Editor sharedata_search = getSharedPreferences("searchEngine", 0).edit();
+		sharedata_search.putString("searchEngine", searchEngine);//voiceEngine是给外部activity的数据id
+		sharedata_search.commit();
 
 		Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show();
 	}
