@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.iflytek.speech.RecognizerResult;
 import com.iflytek.speech.SpeechConfig.RATE;
 import com.iflytek.speech.SpeechError;
+import com.iflytek.speech.SynthesizerPlayer;
 import com.iflytek.ui.RecognizerDialog;
 import com.iflytek.ui.RecognizerDialogListener;
 import com.scut.vc.identifysemantic.IdentifyThread;
@@ -283,7 +284,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.IdentifyError: {
-				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
+				speakString("对不起哦，找不到你的命令");
+				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");			
+				
 			}
 			default: {
 				// updateListView("对不起哦，找不到你的");
@@ -401,6 +404,25 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		//voiceString += arg0.get(0).text;
 		
 	}
+	
+	/**
+	 * 讯飞语音合成
+	 * @param helperStr
+	 */
+	public void speakString(String helperStr){
+		 
+		SynthesizerPlayer player = 
+				SynthesizerPlayer.createSynthesizerPlayer(this,  "appid="
+						+ getString(R.string.app_id));
+		player.setVoiceName(getString(R.string.preference_default_tts_role));
+		player.setSampleRate(RATE.rate16k);
+		player.setSpeed(30);
+		player.setVolume(70);
+		player.playText(helperStr, "ent=vivi21,bft=2", null);
+		
+	}
+	
+	
 
 	/**
 	 * 对列表框的重用
