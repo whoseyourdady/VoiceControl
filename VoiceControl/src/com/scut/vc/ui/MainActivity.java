@@ -262,8 +262,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.SwitchOnDevice: {
-				String device = (String) task.getTaskParam();
-				mDevCon.EnableDevice(device);
+				DeviceControl.Device device = (DeviceControl.Device) task.getTaskParam();
+				mDevCon.Execute(device);
 			}
 				break;
 			case Task.SetAlarm: {

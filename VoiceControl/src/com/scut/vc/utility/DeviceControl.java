@@ -23,6 +23,8 @@ import android.app.PendingIntent.CanceledException;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.FeatureInfo;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -49,6 +51,13 @@ public class DeviceControl {
 
 	private Intent mGpsIntent;
 
+	private final int Flash = 1;
+	private final int Wifi =2;
+	private final int BlueTooth = 3;
+	private final int Gprs =4;
+	private final int airmode =5;
+	private final int Gps = 6;
+	
 	public DeviceControl(Activity activity) {
 		mActivity = activity;
 
@@ -106,6 +115,8 @@ public class DeviceControl {
 	private void EnableBlueTooth(boolean enable) {
 		if (enable) {
 			mBlueTooth.enable();
+		
+			
 		} else {
 			mBlueTooth.disable();
 		}
@@ -117,6 +128,7 @@ public class DeviceControl {
 	private void EnableWiFi(boolean enable) {
 		if (enable) {
 			mWifiManager.setWifiEnabled(true);
+		
 		} else {
 			mWifiManager.setWifiEnabled(false);
 		}
@@ -275,6 +287,17 @@ public class DeviceControl {
 		}
 	}
 	
+	public void Execute(Device device) {
+		switch(getCode(device.mDevice)) {
+		case BlueTooth :{
+			if (!hasBlueTooth()) {
+				return;
+			}
+//			if (mBlueTooth.)
+		}break;
+		}
+	}
+	
 	public class Device {
 		String mDevice;//设置的名称
 		boolean flag;//true标识着开设备,false则意味关掉设置 
@@ -283,6 +306,77 @@ public class DeviceControl {
 			mDevice = device;
 			flag = _flag;
 		}
+	}
+	
+	/**
+	 * 判断是否带有闪光灯
+	 */
+	private boolean hasFlashMode() {
+		FeatureInfo [] feature = mActivity.getPackageManager().getSystemAvailableFeatures();
+		for (FeatureInfo featureInfo : feature) {
+			if (PackageManager.FEATURE_CAMERA_FLASH.equals(featureInfo.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断有没有GPS
+	 * @return
+	 */
+	private boolean hasGps() {
+		FeatureInfo [] feature = mActivity.getPackageManager().getSystemAvailableFeatures();
+		for (FeatureInfo featureInfo : feature) {
+			if (PackageManager.FEATURE_LOCATION_GPS.equals(featureInfo.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断有没有蓝牙
+	 */
+	private boolean hasBlueTooth() {
+		FeatureInfo [] feature = mActivity.getPackageManager().getSystemAvailableFeatures();
+		for (FeatureInfo featureInfo : feature) {
+			if (PackageManager.FEATURE_BLUETOOTH.equals(featureInfo.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断有没有wifi
+	 * @return
+	 */
+	private boolean hasWiFi() {
+		FeatureInfo [] feature = mActivity.getPackageManager().getSystemAvailableFeatures();
+		for (FeatureInfo featureInfo : feature) {
+			if (PackageManager.FEATURE_WIFI.equals(featureInfo.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private int getCode(String device) {
+		if (device.equals("wifi")) {
+			return Wifi;
+		} else if (device.equals("gprs")) {
+			return Gprs;
+		} else if (device.equals("gps")) {
+			return Gps;
+		} else if (device.equals("bluetooh")) {
+			return BlueTooth;
+		} else if (device.equals("flash")) {
+			return Flash;
+		} else if (device.equals("airplanemode")) {
+			return airmode;
+		}
+		return 0;
 	}
 
 }
