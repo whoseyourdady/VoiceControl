@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private SharedPreferences mSharedPreferences;
 	private RecognizerDialog iatDialog;
 	private String infos = null;
-	public static String voiceString = null;// 语音服务提供商返回的处理字符串
+	public static String voiceString = "";// 语音服务提供商返回的处理字符串
 	public ProgressDialog pd;// 识别中进度条
 	private boolean showProgressDiaglog = false;
 	public static boolean EnableGoogleVoice = false;// 使用google API
@@ -95,7 +95,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		//Test(task);
 		
-		voiceString = "大闹天宫闹钟";
+		//voiceString = "大闹天宫闹钟";
 
 
 	}
@@ -338,7 +338,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// TODO Auto-generated method stub
 		String engine = "sms";
 		String area = null;
-
+		//voiceString = "";
 		iatDialog.setEngine(engine, area, null);
 		iatDialog.setSampleRate(RATE.rate8k);
 		infos = null;
@@ -371,7 +371,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
-
+		updateListView(R.layout.chat_user, voiceString);
 	}
 
 	/**
@@ -379,15 +379,16 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	 */
 	public void onResults(ArrayList<RecognizerResult> arg0, boolean arg1) {
 		// TODO Auto-generated method stub
-		voiceString = "";
+		//voiceString = "";
 		for (int i = 0; i < arg0.size(); i++) {
 			RecognizerResult recognizerResult = arg0.get(i);
 			voiceString += recognizerResult.text;
 		}
-		if (voiceString.equals("。") == false) {
-			updateListView(R.layout.chat_user, voiceString);
-		}
-
+//		if (voiceString.equals("。") == false) {
+//			updateListView(R.layout.chat_user, voiceString);
+//		}
+		//voiceString += arg0.get(0).text;
+		
 	}
 
 	/**
@@ -439,7 +440,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		chatList = null;
 		mSharedPreferences = null;
 		iatDialog = null;
-		voiceString = null;// 语音服务提供商返回的处理字符串
+		voiceString = "";// 语音服务提供商返回的处理字符串
 		pd = null;
 		mThread = null;// 语义识别的多线程
 		super.onDestroy();
