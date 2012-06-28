@@ -16,13 +16,13 @@ public class IdentifyThread implements Runnable {
 		// TODO Auto-generated method stub
 		while (true) {
 			try {
-				if (null != MainActivity.voiceString) {
+				if (!MainActivity.voiceString.equals("")) {
 					ShowProcess();
 					Task task = mSemanticIdentify.Identify((MainActivity.voiceString));
 					Message msg = new Message();
 					msg.obj = task;
 					((MainActivity) mActivity).mhandler.sendMessage(msg);
-					MainActivity.voiceString = null;
+					MainActivity.voiceString = "";
 					ShowProcess();
 				} else {
 					Thread.sleep(1000);
