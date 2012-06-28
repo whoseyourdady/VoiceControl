@@ -363,24 +363,29 @@ public class SemanticIdentify {
 				task = new Task(Task.SetAlarm, strVoice);
 
 			}
-
 		}
 			break;
 		case SETSYSTEM: {
 			// {"设置", "打开", "关闭", "关上", "关掉"},
-			String strHW = strSystemKey(strVoice);
-			/*
-			 * if (strVoice.contains("设置") || strVoice.contains("打开")) {//
-			 * 打开系统硬件 command.mHardware = true; } else {// 关闭系统硬件
-			 * command.mHardware = false; }
-			 */
+			
+			String strHW = strSystemKey(strVoice);//识别出要打开的硬件
+			boolean flag = false;
+
+			if (strVoice.contains("设置") || strVoice.contains("打开")) {// 判断是打开还是关闭
+				flag = true;
+			} else {// 关闭系统硬件
+				flag = false;
+			}
+
+			
 			if (strHW.equals("")) {
 				System.out.println("没有对应的命令");
 				task = new Task(Task.IdentifyError, null);
 			} else {
 				System.out.println("strVoice = " + strVoice);
 				System.out.println("hardware = " + strHW);
-				task = new Task(Task.SwitchOnDevice, strHW);
+				DeviceControl.Device device = mDevCon.new Device(strHW, flag);
+				task = new Task(Task.SwitchOnDevice, device);
 			}
 			// return command;
 			break;
