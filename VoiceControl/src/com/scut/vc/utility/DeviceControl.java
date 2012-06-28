@@ -257,7 +257,6 @@ public class DeviceControl {
 		} else if (device.equals("airplanemode")) {
 			EnableFlyingMode(true);
 		}
-
 	}
 
 	public void DisableDevice(String device) {
@@ -273,6 +272,16 @@ public class DeviceControl {
 			EnableTorch(false);
 		} else if (device.equals("airplanemode")) {
 			EnableFlyingMode(false);
+		}
+	}
+	
+	public class Device {
+		String mDevice;//设置的名称
+		boolean flag;//true标识着开设备,false则意味关掉设置 
+		
+		public Device(String device, boolean _flag) {
+			mDevice = device;
+			flag = _flag;
 		}
 	}
 
