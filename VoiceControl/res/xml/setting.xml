@@ -2,13 +2,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <ListPreference
-        android:dialogTitle="识别引擎选择"
-        android:entries="@array/entries_list_preference"
-        android:entryValues="@array/entriesvalue_list_preference"
-        android:key="voiceEngine"
         android:defaultValue="1"
+        android:dialogTitle="识别引擎选择"
+        android:entries="@array/voiceEngine_list_preference"
+        android:entryValues="@array/voiceEngineValue_list_preference"
+        android:key="voiceEngine"
         android:summary="请点击选择"
         android:title="识别引擎选择" />
+    <ListPreference
+        android:defaultValue="1"
+        android:dialogTitle="搜索引擎选择"
+        android:entries="@array/searchEngine_list_preference"
+        android:entryValues="@array/searchEngineValue_list_preference"
+        android:key="searchEngine"
+        android:summary="请点击选择"
+        android:title="搜索引擎选择" />
 
     <CheckBoxPreference
         android:defaultValue="true"
