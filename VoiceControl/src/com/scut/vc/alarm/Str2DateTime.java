@@ -26,7 +26,10 @@ public class Str2DateTime {
 		hour = cal.get(Calendar.HOUR_OF_DAY);
 		minute = cal.get(Calendar.MINUTE);
 	}
-
+/**
+ * 根据字符串中的时间生成特定的时间
+ * @return String analysis：特定的时间，具有一定的格式
+ */
 	public String Analysis(){
 
 		String analysis = "";
@@ -69,6 +72,11 @@ public class Str2DateTime {
 	}
 
 
+	/**
+	 * 对字符串中的时间信息生成数组形式，
+	 * @param str    字符串
+	 * @return  num[]   字符串数组，num[0]小时数， num[1]分钟数
+	 */
 	public static String[] formatTime(String str){
 		String num[] = new String[2];
 		num [1] = num[0] = "";
@@ -176,6 +184,10 @@ public class Str2DateTime {
 				}
 			}
 		}
+		
+		/*
+		 * 当字符串含有一下关键字时，将会在当前时间的基础上加上这些时间间隔
+		 */
 		if(str.contains("后")&&str.contains("分")){
 
 			int tempMinute = Integer.parseInt(num[0])+ minute;			
@@ -217,6 +229,10 @@ public class Str2DateTime {
 	}
 
 
+	/**
+	 * 根据月份的不同，设置“明天”关键词设置
+	 * @return
+	 */
 	private String date2Tomorrow(){
 		String date = "";
 		if(month == 2){
