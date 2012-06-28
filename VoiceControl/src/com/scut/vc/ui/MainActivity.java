@@ -91,9 +91,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		//Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		//Task task = new Task(Task.CALL, callTarget);
+		Task task = new Task(Task.SendMessage, callTarget);
 		//Task task = new Task(Task.SetAlarm, "´óÄÖÌì¹¬ÄÖÖÓ");
-		//Test(task);
+		Test(task);
 		
 		//voiceString = "´óÄÖÌì¹¬ÄÖÖÓ";
 
@@ -236,8 +236,19 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.SendMessage: {
-				String number = (String) task.getTaskParam();
-				mContact.SendMsg(number, "ooo");
+			
+				
+				@SuppressWarnings("unchecked")
+				ArrayList<Contact.ContactPerson> msgList = (ArrayList<Contact.ContactPerson>) task
+						.getTaskParam();
+				if (0 == msgList.size()) {
+					//mAppManager.Execute("com.android.contacts");
+				} else if (1 == msgList.size()) {
+					String phoneNum = msgList.get(0).GetNumber();
+					mContact.SendMsg(phoneNum, "");
+				} else if (1 < msgList.size()) {
+					ShowSelectDialog(msgList, task);
+				}
 			}
 				break;
 			case Task.OpenApp: {
