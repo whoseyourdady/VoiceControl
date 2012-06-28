@@ -31,9 +31,9 @@ public class WebSearch {
 		// SharedPreferences sharedata = getSharedPreferences(
 		// "voiceEngine", MODE_WORLD_READABLE | MODE_MULTI_PROCESS);
 		SharedPreferences sharedata = mActivity.getSharedPreferences(
-				"voiceEngine", Context.MODE_WORLD_READABLE);
-		String searchEngine = sharedata.getString("searchEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
-		System.out.println("SearchEngine = " + searchEngine);
+				"searchEngine", Context.MODE_WORLD_READABLE);
+		String searchEngine = sharedata.getString("searchEngine", "0");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
+		System.out.println("SearchEngine111111111111 = " + searchEngine);
 
 		if(searchEngine.equals("1")){//选择为百度搜索引擎的情况，此同时为默认情况
 			strUrl = strBaiduEngine1;
