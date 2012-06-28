@@ -26,14 +26,10 @@ public class WebSearch {
 	// 进行网页搜索,参数为指定搜索引擎加上关键字的URL
 	public int Execute(String keyword) {
 		
-		// 获取语音引擎选项的数据
-		// 下一句需做版本上的兼容
-		// SharedPreferences sharedata = getSharedPreferences(
-		// "voiceEngine", MODE_WORLD_READABLE | MODE_MULTI_PROCESS);
 		SharedPreferences sharedata = mActivity.getSharedPreferences(
 				"searchEngine", Context.MODE_WORLD_READABLE);
 		String searchEngine = sharedata.getString("searchEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
-		System.out.println("execute_SearchEngine = " + searchEngine);
+		System.out.println("execute_SearchEngine  =  " + searchEngine);
 
 		if(searchEngine.equals("1")){//选择为百度搜索引擎的情况，此同时为默认情况
 			strUrl = strBaiduEngine1;
