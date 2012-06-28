@@ -10,7 +10,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-public class SettingActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener  {
+public class SettingActivity extends PreferenceActivity implements
+		OnSharedPreferenceChangeListener {
 
 	private ListPreference mVoiceEngine;
 	private ListPreference mSearchEngine;
@@ -36,10 +37,27 @@ public class SettingActivity extends PreferenceActivity implements OnSharedPrefe
 				"voiceEngine");
 		mSearchEngine = (ListPreference) getPreferenceScreen().findPreference(
 				"searchEngine");
+		// 初始显示时，显示对应的summary
+
+		CharSequence entryVoice = mVoiceEngine.getEntry();
+		mVoiceEngine.setSummary(entryVoice);
+		System.out.println(entryVoice);
+
+		CharSequence entrySearch = mSearchEngine.getEntry();
+		mSearchEngine.setSummary(entrySearch);
+		System.out.println(entrySearch);
+
+		/*
+		 * System.out.println(mVoiceEngine.getKey());//voiceEngine
+		 * System.out.println(mVoiceEngine.getValue());//2
+		 * System.out.println(mVoiceEngine.getTitle());//识别语音引擎
+		 * System.out.println(mVoiceEngine.getEntry());//谷歌语音
+		 */
 
 		// 注册改变监听器
-		 getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-	
+		getPreferenceScreen().getSharedPreferences()
+				.registerOnSharedPreferenceChangeListener(this);
+
 	}
 
 	@Override
@@ -63,10 +81,11 @@ public class SettingActivity extends PreferenceActivity implements OnSharedPrefe
 
 		Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show();
 	}
-	
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {  
-		// TODO Auto-generated method stub	
-		if (key.equals("voiceEngine")) {				
+
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		// TODO Auto-generated method stub
+		if (key.equals("voiceEngine")) {
 			CharSequence entry = mVoiceEngine.getEntry();
 			mVoiceEngine.setSummary(entry);
 			System.out.println(entry);
