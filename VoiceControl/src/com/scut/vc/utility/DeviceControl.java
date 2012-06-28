@@ -278,7 +278,9 @@ public class DeviceControl {
 			}
 			if (!(parameter.getFlashMode().equals(
 					Camera.Parameters.FLASH_MODE_OFF)
+
 					^ device.flag)) {
+
 				return;
 			}
 			if (parameter.getFlashMode().equals(

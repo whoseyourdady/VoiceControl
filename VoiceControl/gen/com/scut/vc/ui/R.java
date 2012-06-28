@@ -9,22 +9,24 @@ package com.scut.vc.ui;
 
 public final class R {
     public static final class array {
-        public static final int entries_list_preference=0x7f070000;
-        public static final int entriesvalue_list_preference=0x7f070001;
-        public static final int preference_entries_iat_engine=0x7f070006;
-        public static final int preference_entries_iat_rate=0x7f07000a;
-        public static final int preference_entries_isr_engine=0x7f07000c;
-        public static final int preference_entries_isr_rate=0x7f07000e;
-        public static final int preference_entries_tts_music=0x7f070004;
-        public static final int preference_entries_tts_role=0x7f070002;
-        public static final int preference_values_iat_engine=0x7f070007;
-        public static final int preference_values_iat_rate=0x7f07000b;
-        public static final int preference_values_isr_engine=0x7f07000d;
-        public static final int preference_values_isr_rate=0x7f07000f;
-        public static final int preference_values_poi_city=0x7f070009;
-        public static final int preference_values_poi_province=0x7f070008;
-        public static final int preference_values_tts_music=0x7f070005;
-        public static final int preference_values_tts_role=0x7f070003;
+        public static final int preference_entries_iat_engine=0x7f070008;
+        public static final int preference_entries_iat_rate=0x7f07000c;
+        public static final int preference_entries_isr_engine=0x7f07000e;
+        public static final int preference_entries_isr_rate=0x7f070010;
+        public static final int preference_entries_tts_music=0x7f070006;
+        public static final int preference_entries_tts_role=0x7f070004;
+        public static final int preference_values_iat_engine=0x7f070009;
+        public static final int preference_values_iat_rate=0x7f07000d;
+        public static final int preference_values_isr_engine=0x7f07000f;
+        public static final int preference_values_isr_rate=0x7f070011;
+        public static final int preference_values_poi_city=0x7f07000b;
+        public static final int preference_values_poi_province=0x7f07000a;
+        public static final int preference_values_tts_music=0x7f070007;
+        public static final int preference_values_tts_role=0x7f070005;
+        public static final int searchEngineValue_list_preference=0x7f070003;
+        public static final int searchEngine_list_preference=0x7f070002;
+        public static final int voiceEngineValue_list_preference=0x7f070001;
+        public static final int voiceEngine_list_preference=0x7f070000;
     }
     public static final class attr {
     }
