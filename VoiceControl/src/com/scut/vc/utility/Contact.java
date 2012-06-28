@@ -15,6 +15,7 @@ public class Contact {
 
 	public Contact(Activity activity) {
 		mActivity = activity;
+		mContactsPersonList = null;
 	}
 
 	public void CallPerson(String phoneNum) {
@@ -117,7 +118,7 @@ public class Contact {
 	}
 
 	public ArrayList<ContactPerson> GetPersonList() {
-		GetContactInfo();
+		if(mContactsPersonList == null)GetContactInfo();
 		return mContactsPersonList;
 	}
 }
