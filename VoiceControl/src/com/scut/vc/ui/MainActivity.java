@@ -16,8 +16,10 @@ import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.iflytek.speech.RecognizerResult;
 import com.iflytek.speech.SpeechConfig.RATE;
 import com.iflytek.speech.SpeechError;
+import com.iflytek.speech.SynthesizerPlayer;
 import com.iflytek.ui.RecognizerDialog;
 import com.iflytek.ui.RecognizerDialogListener;
 import com.scut.vc.identifysemantic.IdentifyThread;
@@ -57,7 +60,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private SharedPreferences mSharedPreferences;
 	private RecognizerDialog iatDialog;
 	private String infos = null;
-	public static String voiceString = null;// 语音服务提供商返回的处理字符串
+	public static String voiceString = "";// 语音服务提供商返回的处理字符串
 	public ProgressDialog pd;// 识别中进度条
 	private boolean showProgressDiaglog = false;
 	public static boolean EnableGoogleVoice = false;// 使用google API
@@ -78,6 +81,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		/**
 		 * 测度代码;
 		 */
+		updateListView(R.layout.chat_helper, "有什么可以帮到您？");
+
 		ArrayList<Contact.ContactPerson> callTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
 		Contact.ContactPerson contactPerson1 = mContact.new ContactPerson(
 				"中国移动A", "10086");
@@ -95,7 +100,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		Test(task);
 		
-		//voiceString = "大闹天宫闹钟";
+		voiceString = "大闹天宫闹钟";
 
 
 	}
@@ -139,9 +144,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			break;
 		case Menu.FIRST + 3:
 			Toast.makeText(this, "退出应用程序", Toast.LENGTH_SHORT).show();
-			Intent intent3 = new Intent();
-			intent3.setClass(this, HelpActivity.class);
-			startActivity(intent3);
+		    android.os.Process.killProcess(android.os.Process.myPid());
 			break;
 		}
 		return false;
@@ -181,6 +184,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		/**
 		 * 对话筒按钮的响应
 		 */
+		ib.setOnTouchListener(new OnTouchListener(){
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+      
+				return false;
+			} });
+			  
 		ib.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -283,7 +293,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.IdentifyError: {
+				speakString("对不起哦，找不到你的命令");
 				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
+				
 			}
 			default: {
 				// updateListView("对不起哦，找不到你的");
@@ -349,7 +361,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// TODO Auto-generated method stub
 		String engine = "sms";
 		String area = null;
-
+		//voiceString = "";
 		iatDialog.setEngine(engine, area, null);
 		iatDialog.setSampleRate(RATE.rate8k);
 		infos = null;
@@ -375,14 +387,14 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 	}
 
-	public void onClick(View v) {
+	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
-
+		updateListView(R.layout.chat_user, voiceString);
 	}
 
 	/**
@@ -390,15 +402,35 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	 */
 	public void onResults(ArrayList<RecognizerResult> arg0, boolean arg1) {
 		// TODO Auto-generated method stub
-		voiceString = "";
+		//voiceString = "";
 		for (int i = 0; i < arg0.size(); i++) {
 			RecognizerResult recognizerResult = arg0.get(i);
 			voiceString += recognizerResult.text;
 		}
-		if (voiceString.equals("。") == false) {
-			updateListView(R.layout.chat_user, voiceString);
-		}
-
+//		if (voiceString.equals("。") == false) {
+//			updateListView(R.layout.chat_user, voiceString);
+//		}
+		//voiceString += arg0.get(0).text;
+		
+	}
+	
+	
+	
+	/**
+	 * 讯飞语音合成
+	 * @param helperStr 
+	 */
+	public void speakString(String helperStr){
+		 
+		SynthesizerPlayer player = 
+				SynthesizerPlayer.createSynthesizerPlayer(this,  "appid="
+						+ getString(R.string.app_id));
+		player.setVoiceName(getString(R.string.preference_default_tts_role));
+		player.setSampleRate(RATE.rate16k);
+		player.setSpeed(75);
+		player.setVolume(75);
+		player.playText(helperStr, "ent=vivi21,bft=2", null);
+		
 	}
 
 	/**
@@ -450,7 +482,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		chatList = null;
 		mSharedPreferences = null;
 		iatDialog = null;
-		voiceString = null;// 语音服务提供商返回的处理字符串
+		voiceString = "";// 语音服务提供商返回的处理字符串
 		pd = null;
 		mThread = null;// 语义识别的多线程
 		super.onDestroy();
@@ -461,4 +493,6 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		msg.obj = task;
 		mhandler.sendMessage(msg);
 	}
+
+
 }

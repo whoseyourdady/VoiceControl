@@ -363,7 +363,6 @@ public class SemanticIdentify {
 				task = new Task(Task.SetAlarm, strVoice);
 
 			}
-
 		}
 			break;
 		case SETSYSTEM: {

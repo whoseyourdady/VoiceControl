@@ -11,28 +11,24 @@
       android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:orientation="vertical">
- 
-  <TextView android:id="@+id/txvName" 
-       android:layout_width="wrap_content" 
-       android:layout_height="wrap_content"
-       android:paddingBottom="2px"
-       android:textColor="@android:color/black" 
-       android:gravity="center"
-       android:textSize="10dip" >
-       </TextView>
+
+  <ImageView
+      android:id="@+id/imageView1"
+      android:layout_width="50dp"
+      android:layout_height="80dp"
+      android:src="@drawable/assistant" />
        
        </LinearLayout>
   
   <TextView android:id="@+id/txvInfo" 
        android:layout_width="wrap_content" 
        android:layout_height="wrap_content"
-       android:paddingTop="7px"
-       android:paddingBottom="7px"
-       android:paddingLeft="10px"
-       android:paddingRight="7px"
+       android:paddingTop="7dp"
+       android:paddingBottom="7dp"
+       android:paddingLeft="35dp"
+       android:paddingRight="15dp"
        android:textColor="@android:color/black" 
        android:textSize="20dip"     
-       android:background="@drawable/chatbg" 
-       android:gravity="center"
+       android:background="@drawable/chatfrom_bg_normal" 
        ></TextView>
 </LinearLayout>
