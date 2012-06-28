@@ -200,8 +200,9 @@ public class SemanticIdentify {
 
 			// callTarget在上面的执行过程中至少会被赋有一个值，故不会出现越界错误
 			// 同时，此处的if判断是为了确认返回有效的识别结果
-			// 如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可呼叫的联系人，出错
-			// 如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，故没有对应可呼叫的联系人，出错
+			// 1、如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可呼叫的联系人，出错
+			// 2、如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，
+			//故没有对应可呼叫的联系人，出错(可能是由于对应的联系人没有储存对应的联系号码所致)
 			if (maxScore == 0
 					|| containNum(callTarget.get(0).GetNumber()) == "") {
 				System.out.println("没有对应的call命令");

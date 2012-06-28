@@ -117,7 +117,7 @@ public class Contact {
 	}
 
 	public ArrayList<ContactPerson> GetPersonList() {
-		GetContactInfo();
+		if(mContactsPersonList == null) GetContactInfo();
 		return mContactsPersonList;
 	}
 }
