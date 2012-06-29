@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public static boolean EnableGoogleVoice = false;// 使用google API
 	public static boolean EnableXunfeiVoice = true;// 使用讯飞 API
 
-	private IdentifyThread mThread;// 语义识别的多线程
+	private IdentifyThread mThread;// 语义识别多线程
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -294,7 +294,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				break;
 			case Task.IdentifyError: {
 				speakString("对不起哦，找不到你的命令");
+
 				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
+
+
 				
 			}
 			default: {
@@ -414,11 +417,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		
 	}
 	
-	
-	
+
 	/**
 	 * 讯飞语音合成
-	 * @param helperStr 
+	 * @param helperStr
 	 */
 	public void speakString(String helperStr){
 		 
@@ -427,11 +429,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 						+ getString(R.string.app_id));
 		player.setVoiceName(getString(R.string.preference_default_tts_role));
 		player.setSampleRate(RATE.rate16k);
+
 		player.setSpeed(75);
 		player.setVolume(75);
 		player.playText(helperStr, "ent=vivi21,bft=2", null);
 		
 	}
+
 
 	/**
 	 * 对列表框的重用
