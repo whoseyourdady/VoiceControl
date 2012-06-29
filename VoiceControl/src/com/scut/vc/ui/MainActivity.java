@@ -494,6 +494,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		iatDialog = null;
 		voiceString = "";// 语音服务提供商返回的处理字符串
 		pd = null;
+		android.os.Process.killProcess(android.os.Process.myPid());
 		mThread = null;// 语义识别的多线程
 		super.onDestroy();
 	}
