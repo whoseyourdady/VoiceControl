@@ -21,6 +21,9 @@ public class SemanticIdentify {
 	final static int SETNOTIFICATION = 4;
 	final static int SETSYSTEM = 5;
 
+	final static String OPENCALL = "com.android.contacts";// 打开联系人程序的包名
+	final static String OPENMMS = "com.android.mms";// 打开短信程序的包名
+
 	private Activity mActivity;// 自己的activity
 
 	private AppsManager mAppManager;
@@ -33,7 +36,7 @@ public class SemanticIdentify {
 
 	static String mKeyWord[][] = { { "打开", "运行", "启动" },// 打开应用的关键字
 			{ "打电话给", "打电话", "电话", "拨打", "打给", "接通" }, // 打电话的关键字
-			{ "发短信给", "短信" }, // 发短信的关键字
+			{ "发短信给", "发短信到", "发短信", "短信给", "短信" }, // 发短信的关键字
 			{ "什么", "搜索", "查找" }, // 网络搜索的关键字
 			{ "闹钟", "提醒", "点钟", "点", "小时", "分钟" }, // 设置提醒的关键字
 	// {"设置", "打开", "关闭", "关上", "关掉"}, //设置系统的关键字
@@ -112,6 +115,12 @@ public class SemanticIdentify {
 			break;
 		}
 		case CALL: {
+
+			// 当没有剩余的参数时，即没有任何可判断的数据时，默认打开联系人的程序
+			if (strVoice.length() == 0) {
+				task = new Task(Task.OpenApp, OPENCALL);
+				break;
+			}
 			ArrayList<Contact.ContactPerson> contactPersonList = mContact
 					.GetPersonList();
 
@@ -200,8 +209,9 @@ public class SemanticIdentify {
 
 			// callTarget在上面的执行过程中至少会被赋有一个值，故不会出现越界错误
 			// 同时，此处的if判断是为了确认返回有效的识别结果
-			// 如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可呼叫的联系人，出错
-			// 如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，故没有对应可呼叫的联系人，出错
+			// 1、如果maxScore==0,那么在匹配联系人的时候，就没有任何一个联系人可以匹配，故没有对应可呼叫的联系人，出错
+			// 2、如果callTarget的第一项的号码为空的话，那么callTarget第一项之后的都为空，即callTarget内部不含任何数据，
+			// 故没有对应可呼叫的联系人，出错(可能是由于对应的联系人没有储存对应的联系号码所致)
 			if (maxScore == 0
 					|| containNum(callTarget.get(0).GetNumber()) == "") {
 				System.out.println("没有对应的call命令");
@@ -227,6 +237,13 @@ public class SemanticIdentify {
 		}
 
 		case MESSAGE: {
+
+			// 当没有剩余的参数时，即没有任何可判断的数据时，默认打开短信的程序
+			if (strVoice.length() == 0) {
+				task = new Task(Task.OpenApp, OPENMMS);
+				break;
+			}
+
 			ArrayList<Contact.ContactPerson> contactPersonList = mContact
 					.GetPersonList();
 
@@ -367,8 +384,8 @@ public class SemanticIdentify {
 			break;
 		case SETSYSTEM: {
 			// {"设置", "打开", "关闭", "关上", "关掉"},
-			
-			String strHW = strSystemKey(strVoice);//识别出要打开的硬件
+
+			String strHW = strSystemKey(strVoice);// 识别出要打开的硬件
 			boolean flag = false;
 
 			if (strVoice.contains("设置") || strVoice.contains("打开")) {// 判断是打开还是关闭
@@ -377,7 +394,6 @@ public class SemanticIdentify {
 				flag = false;
 			}
 
-			
 			if (strHW.equals("")) {
 				System.out.println("没有对应的命令");
 				task = new Task(Task.IdentifyError, null);
