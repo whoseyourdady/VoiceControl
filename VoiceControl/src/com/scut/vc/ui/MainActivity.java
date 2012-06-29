@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -75,6 +76,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		inital();
 		Thread thread = new Thread((mThread = new IdentifyThread(this)));
 		thread.start();
+		
+
 		
 
 
