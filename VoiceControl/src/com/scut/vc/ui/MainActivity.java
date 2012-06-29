@@ -117,8 +117,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		 * 4、文本，菜单的显示文本
 		 */
 		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "帮助");
-		menu.add(Menu.NONE, Menu.FIRST + 2, 1, "设置");
-		menu.add(Menu.NONE, Menu.FIRST + 3, 3, "退出");
+		menu.add(Menu.NONE, Menu.FIRST + 2, 2, "设置");
+		menu.add(Menu.NONE, Menu.FIRST + 3, 3, "闹钟列表");
+		menu.add(Menu.NONE, Menu.FIRST + 4, 4, "退出");
 		return true;
 
 	}
@@ -147,6 +148,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			startActivity(intent2);
 			break;
 		case Menu.FIRST + 3:
+			Toast.makeText(this, "打开闹钟列表", Toast.LENGTH_SHORT).show();
+			Intent intent3 = new Intent();
+			intent3.setClass(this, AlarmActivity.class);
+			startActivity(intent3);
+			break;
+		case Menu.FIRST + 4:
 			Toast.makeText(this, "退出应用程序", Toast.LENGTH_SHORT).show();
 		    android.os.Process.killProcess(android.os.Process.myPid());
 			break;
