@@ -73,19 +73,18 @@ public final class R {
         public static final int RelativeLayout1=0x7f0a000d;
         public static final int RelativeLayout2=0x7f0a0004;
         public static final int alarmList=0x7f0a0007;
-        public static final int chatlist=0x7f0a000f;
+        public static final int chatlist=0x7f0a000e;
         public static final int clock=0x7f0a0005;
         public static final int clockTime=0x7f0a0009;
-        public static final int deleteTime=0x7f0a000a;
-        public static final int helper_voice=0x7f0a0010;
+        public static final int deleteTime=0x7f0a000b;
+        public static final int helper_voice=0x7f0a000f;
         public static final int imageView1=0x7f0a0000;
         public static final int linearLayout2=0x7f0a0006;
-        public static final int seekbar=0x7f0a0012;
-        public static final int seekbar_container=0x7f0a0011;
-        public static final int state=0x7f0a000b;
+        public static final int seekbar=0x7f0a0011;
+        public static final int seekbar_container=0x7f0a0010;
+        public static final int state=0x7f0a000a;
         public static final int textChild=0x7f0a0002;
         public static final int textGroup=0x7f0a000c;
-        public static final int title=0x7f0a000e;
         public static final int txvInfo=0x7f0a0001;
     }
     public static final class layout {
