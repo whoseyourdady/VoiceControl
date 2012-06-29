@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		//Test(task);
 		//mDevCon.Release();
-		voiceString = "下午五点闹钟";
+		//voiceString = "下午五点闹钟";
 
 
 	}
@@ -216,12 +216,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				String voiceEngine = sharedata1.getString("voiceEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
 				System.out.println("voiceEngine = " + voiceEngine);
 
-				if (voiceEngine.equals("1")) {// EnableGoogleVoice
-					startVoiceRecognitionActivity();
+				//由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
+				if (voiceEngine.equals("1")) {// EnableXunfeiVoice
+					showIatDialog();
 //					voiceString = "23点开会";
 //					updateListView(R.layout.chat_user, voiceString);
-				} else if (voiceEngine.equals("2")) {// EnableXunfeiVoice
-					showIatDialog();
+				} else if (voiceEngine.equals("2")) {// EnableGoogleVoice
+					startVoiceRecognitionActivity();
 //					voiceString = "23点半开会";
 //					updateListView(R.layout.chat_user, voiceString);
 				}
