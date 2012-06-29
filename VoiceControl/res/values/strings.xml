@@ -6,8 +6,8 @@
     <string name="blank_title"></string>
 
     <string-array name="voiceEngine_list_preference">
-        <item>谷歌语音</item>
         <item>科大讯飞</item>
+        <item>谷歌语音</item>
     </string-array>
     <string-array name="voiceEngineValue_list_preference">
         <item>1</item>

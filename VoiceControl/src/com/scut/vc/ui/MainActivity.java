@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -77,6 +78,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		thread.start();
 		
 
+		
+
 
 		/**
 		 * 测度代码;
@@ -96,11 +99,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		//Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		Task task = new Task(Task.SendMessage, callTarget);
+		DeviceControl.Device device = mDevCon.new Device("flash", false);
+		Task task = new Task(Task.SwitchOnDevice, device);
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
-		Test(task);
-		
-		voiceString = "大闹天宫闹钟";
+		//Test(task);
+		//mDevCon.Release();
+		//voiceString = "下午五点闹钟";
 
 
 	}
@@ -113,8 +117,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		 * 4、文本，菜单的显示文本
 		 */
 		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "帮助");
-		menu.add(Menu.NONE, Menu.FIRST + 2, 1, "设置");
-		menu.add(Menu.NONE, Menu.FIRST + 3, 3, "退出");
+		menu.add(Menu.NONE, Menu.FIRST + 2, 2, "设置");
+		menu.add(Menu.NONE, Menu.FIRST + 3, 3, "闹钟列表");
+		menu.add(Menu.NONE, Menu.FIRST + 4, 4, "退出");
 		return true;
 
 	}
@@ -143,6 +148,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			startActivity(intent2);
 			break;
 		case Menu.FIRST + 3:
+			Toast.makeText(this, "打开闹钟列表", Toast.LENGTH_SHORT).show();
+			Intent intent3 = new Intent();
+			intent3.setClass(this, AlarmActivity.class);
+			startActivity(intent3);
+			break;
+		case Menu.FIRST + 4:
 			Toast.makeText(this, "退出应用程序", Toast.LENGTH_SHORT).show();
 		    android.os.Process.killProcess(android.os.Process.myPid());
 			break;
@@ -205,12 +216,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				String voiceEngine = sharedata1.getString("voiceEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
 				System.out.println("voiceEngine = " + voiceEngine);
 
-				if (voiceEngine.equals("1")) {// EnableGoogleVoice
-					startVoiceRecognitionActivity();
+				//由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
+				if (voiceEngine.equals("1")) {// EnableXunfeiVoice
+					showIatDialog();
 //					voiceString = "23点开会";
 //					updateListView(R.layout.chat_user, voiceString);
-				} else if (voiceEngine.equals("2")) {// EnableXunfeiVoice
-					showIatDialog();
+				} else if (voiceEngine.equals("2")) {// EnableGoogleVoice
+					startVoiceRecognitionActivity();
 //					voiceString = "23点半开会";
 //					updateListView(R.layout.chat_user, voiceString);
 				}
@@ -293,7 +305,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.IdentifyError: {
-				speakString("对不起哦，找不到你的命令");
+
+			//	speakString("对不起哦，找不到你的命令");
 
 				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
 
@@ -398,6 +411,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
 		updateListView(R.layout.chat_user, voiceString);
+		voiceString ="";
 	}
 
 	/**
@@ -488,6 +502,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		iatDialog = null;
 		voiceString = "";// 语音服务提供商返回的处理字符串
 		pd = null;
+		android.os.Process.killProcess(android.os.Process.myPid());
 		mThread = null;// 语义识别的多线程
 		super.onDestroy();
 	}
@@ -496,6 +511,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		Message msg = new Message();
 		msg.obj = task;
 		mhandler.sendMessage(msg);
+	}
+	
+	public DeviceControl getDevice() {
+		return mDevCon;
 	}
 
 

@@ -277,18 +277,18 @@ public class DeviceControl {
 				return;
 			}
 			if (!(parameter.getFlashMode().equals(
-					Camera.Parameters.FLASH_MODE_OFF)
-
+					Camera.Parameters.FLASH_MODE_TORCH)
+					
 					^ device.flag)) {
 
 				return;
 			}
 			if (parameter.getFlashMode().equals(
-					Camera.Parameters.FLASH_MODE_OFF)) {
-				EnableTorch(true);
-			} else {
+					Camera.Parameters.FLASH_MODE_TORCH)) {
 				EnableTorch(false);
-				Release();
+				
+			} else {
+				EnableTorch(true);
 			}
 		}
 			break;

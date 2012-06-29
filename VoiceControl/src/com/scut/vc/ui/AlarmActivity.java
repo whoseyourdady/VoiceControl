@@ -85,18 +85,7 @@ public class AlarmActivity extends Activity{
 		alarmListView.setAdapter(new MyAlarmAdapter(AlarmActivity.this, states,tempTimes,tempDate,ids));
 	}
 
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if(keyCode !=4){
-			return false;
-		}else{
-			Intent i = new Intent(AlarmActivity.this,MainActivity.class);
-			startActivity(i);
-			AlarmActivity.this.finish();
-		}
-		
-		return super.onKeyDown(keyCode, event);
-	}
+
 }
 
 

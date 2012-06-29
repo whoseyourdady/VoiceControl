@@ -7,7 +7,7 @@
         android:entries="@array/voiceEngine_list_preference"
         android:entryValues="@array/voiceEngineValue_list_preference"
         android:key="voiceEngine"
-        android:summary="谷歌语音"
+        android:summary="科大讯飞"
         android:title="识别引擎选择" />
     <ListPreference
         android:defaultValue="1"
