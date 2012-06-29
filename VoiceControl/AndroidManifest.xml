@@ -44,14 +44,17 @@
         <activity
             android:name=".HelpActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@style/Default.NoTitleBar" >
         </activity>
+        
         <activity
             android:name=".SettingActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar" >
+
+            android:theme="@style/Default.NoTitleBar" >
         </activity>
-             <activity
+        <activity
+
             android:name=".AlarmActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.NoTitleBar"
