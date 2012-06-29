@@ -96,11 +96,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		//Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		Task task = new Task(Task.SendMessage, callTarget);
+		DeviceControl.Device device = mDevCon.new Device("flash", false);
+		Task task = new Task(Task.SwitchOnDevice, device);
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
-		Test(task);
-		
-		voiceString = "大闹天宫闹钟";
+		//Test(task);
+		//mDevCon.Release();
+		voiceString = "下午五点闹钟";
 
 
 	}
@@ -293,7 +294,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.IdentifyError: {
-				speakString("对不起哦，找不到你的命令");
+			//	speakString("对不起哦，找不到你的命令");
 				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
 				
 			}
@@ -395,6 +396,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
 		updateListView(R.layout.chat_user, voiceString);
+		voiceString ="";
 	}
 
 	/**
@@ -492,6 +494,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		Message msg = new Message();
 		msg.obj = task;
 		mhandler.sendMessage(msg);
+	}
+	
+	public DeviceControl getDevice() {
+		return mDevCon;
 	}
 
 

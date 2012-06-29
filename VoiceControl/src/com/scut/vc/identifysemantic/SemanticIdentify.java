@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import com.scut.vc.ui.MainActivity;
 import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.AppsManager.Package_Info;
 import com.scut.vc.utility.Contact;
@@ -388,10 +389,10 @@ public class SemanticIdentify {
 			String strHW = strSystemKey(strVoice);// 识别出要打开的硬件
 			boolean flag = false;
 
-			if (strVoice.contains("设置") || strVoice.contains("打开")) {// 判断是打开还是关闭
-				flag = true;
-			} else {// 关闭系统硬件
+			if (strVoice.contains("灭") || strVoice.contains("关")) {// 判断是打开还是关闭
 				flag = false;
+			} else {// 关闭系统硬件
+				flag = true;
 			}
 
 			if (strHW.equals("")) {
@@ -688,6 +689,7 @@ public class SemanticIdentify {
 	private void inital() {
 		mAppManager = new AppsManager(mActivity);
 		mContact = new Contact(mActivity);
+		mDevCon = ((MainActivity) mActivity).getDevice();
 
 	}
 }
