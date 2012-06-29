@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public static boolean EnableGoogleVoice = false;// 使用google API
 	public static boolean EnableXunfeiVoice = true;// 使用讯飞 API
 
-	private IdentifyThread mThread;// 语义识别的多线程
+	private IdentifyThread mThread;// 语义识别多线程
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
