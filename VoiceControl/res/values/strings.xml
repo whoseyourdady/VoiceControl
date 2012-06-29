@@ -17,12 +17,10 @@
     <string-array name="searchEngine_list_preference">
         <item>百度搜索引擎</item>
         <item>谷歌搜索引擎</item>
-        <item>搜狗搜索引擎</item>
     </string-array>
     <string-array name="searchEngineValue_list_preference">
         <item>1</item>
         <item>2</item>
-        <item>3</item>
     </string-array>
 
     <string name="title">讯飞语音控件</string>

@@ -40,6 +40,7 @@ public class SemanticIdentify {
 			{ "什么", "搜索", "查找" }, // 网络搜索的关键字
 			{ "闹钟", "提醒", "点钟", "点", "小时", "分钟" }, // 设置提醒的关键字
 	// {"设置", "打开", "关闭", "关上", "关掉"}, //设置系统的关键字
+	// {"网易","腾讯","搜狐"},//要识别出来的知名网站
 	};
 
 	public SemanticIdentify(Activity activity) {
@@ -73,6 +74,11 @@ public class SemanticIdentify {
 		}
 		if (!(strSystemKey(strVoice).equals("")) && type != 4) {
 			type = SETSYSTEM;
+		}
+		//由于strWeb函数返回的是此strVoice字符串中是否含有名站的判断
+		//故如果strVoice中含有名站的关键字时，就进行搜索case，在webSearch.java中在地名站的url进行识别
+		if ((strWeb(strVoice)) && type!=4){
+			type = SEARCH;
 		}
 
 		switch (type) {
@@ -564,6 +570,17 @@ public class SemanticIdentify {
 			return mSystemKey[type];// 返回表示指定的系统硬件的关键字
 		}
 
+	}
+	
+	public static boolean strWeb(String strVoice) {
+		String[] webKey = WebSearch.webKey;
+		int length = webKey.length;
+		for(int i=0;i<length;i++){
+			if(strVoice.contains(webKey[i])){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static String[] getTimeFromStr(String str) {
