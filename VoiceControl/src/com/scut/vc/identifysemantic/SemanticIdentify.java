@@ -1,6 +1,7 @@
 package com.scut.vc.identifysemantic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,6 +12,7 @@ import com.scut.vc.utility.AppsManager.Package_Info;
 import com.scut.vc.utility.Contact;
 import com.scut.vc.utility.DeviceControl;
 import com.scut.vc.utility.Task;
+import com.scut.vc.utility.Weather;
 import com.scut.vc.utility.WebSearch;
 
 public class SemanticIdentify {
@@ -20,7 +22,8 @@ public class SemanticIdentify {
 	final static int MESSAGE = 2;
 	final static int SEARCH = 3;
 	final static int SETNOTIFICATION = 4;
-	final static int SETSYSTEM = 5;
+	final static int WEATHER = 5;
+	final static int SETSYSTEM = 6;
 
 	final static String OPENCALL = "com.android.contacts";// 打开联系人程序的包名
 	final static String OPENMMS = "com.android.mms";// 打开短信程序的包名
@@ -31,6 +34,7 @@ public class SemanticIdentify {
 	private Contact mContact;
 	private DeviceControl mDevCon;
 	private WebSearch mWebSearch;
+	private Weather mWeather;
 
 	static String mSystemKey[] = { "wifi", "gprs", "gps", "bluetooh", "flash",
 			"airplanemode" };
@@ -40,6 +44,7 @@ public class SemanticIdentify {
 			{ "发短信给", "发短信到", "发短信", "短信给", "短信" }, // 发短信的关键字
 			{ "什么", "搜索", "查找" }, // 网络搜索的关键字
 			{ "闹钟", "提醒", "点钟", "点", "小时", "分钟" }, // 设置提醒的关键字
+			{ "天气怎么样", "天气"}, // 天气的关键字
 	// {"设置", "打开", "关闭", "关上", "关掉"}, //设置系统的关键字
 	// {"网易","腾讯","搜狐"},//要识别出来的知名网站
 	};
@@ -413,6 +418,37 @@ public class SemanticIdentify {
 			// return command;
 			break;
 		}
+		case WEATHER:{
+			String City;
+			int day;
+			City = "广州";
+			if(strVoice.contains("今天")){
+				day = 0;
+			}else if(strVoice.contains("明天")){
+				day = 1;
+			}else if(strVoice.contains("后天")){
+				day = 2;
+			}else if(strVoice.contains("大后天")){
+				day = 3;
+			}else{
+				day = 0;
+			}
+			String[][] allCity = mWeather.getAllCity();
+			for(int i=0; i<allCity.length; i++ ){
+				for(int j=0; j<allCity[i].length; j++){
+					if(strVoice.contains(allCity[i][j])&&allCity[i][j].length()!=0){
+						City = allCity[i][j];
+						break;
+					}
+				}
+			}
+			HashMap weatherInfos = new HashMap();
+			weatherInfos.put("city", City);
+			weatherInfos.put("day", day);
+			task = new Task(Task.Weather, weatherInfos);
+			System.out.println("天气查询");
+			break;
+		}
 		default: {
 			System.out.println("匹配错误");
 			task = new Task(Task.IdentifyError, null);
@@ -707,6 +743,6 @@ public class SemanticIdentify {
 		mAppManager = new AppsManager(mActivity);
 		mContact = new Contact(mActivity);
 		mDevCon = ((MainActivity) mActivity).getDevice();
-
+		mWeather = new Weather(null, mActivity);
 	}
 }

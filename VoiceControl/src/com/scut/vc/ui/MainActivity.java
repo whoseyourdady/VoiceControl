@@ -1,7 +1,13 @@
 package com.scut.vc.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +44,7 @@ import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.Contact;
 import com.scut.vc.utility.DeviceControl;
 import com.scut.vc.utility.Task;
+import com.scut.vc.utility.Weather;
 import com.scut.vc.utility.WebSearch;
 import com.scut.vc.utility.Contact.ContactPerson;
 import com.scut.vc.xflib.ChatAdapter;
@@ -53,6 +60,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private DeviceControl mDevCon;
 	private WebSearch mWebSearch;
 	private SemanticIdentify mIdentify;
+	private Weather mWeather;
 
 	private ArrayList<ChatEng> list;
 	private ChatAdapter cad;
@@ -61,7 +69,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private SharedPreferences mSharedPreferences;
 	private RecognizerDialog iatDialog;
 	private String infos = null;
-	public static String voiceString = "";// 语音服务提供商返回的处理字符串
+	public static String voiceString = "上海明天天气怎么样";// 语音服务提供商返回的处理字符串
 	public static String voiceTempString = ""; // 讯飞语音返回临时存放的字符串
 	public ProgressDialog pd;// 识别中进度条
 	private boolean showProgressDiaglog = false;
@@ -96,8 +104,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		// Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		DeviceControl.Device device = mDevCon.new Device("flash", false);
-		Task task = new Task(Task.SwitchOnDevice, device);
+		//DeviceControl.Device device = mDevCon.new Device("flash", false);
+		//Task task = new Task(Task.SwitchOnDevice, device);
 
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		//Test(task);
@@ -294,6 +302,28 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				String strvoice = (String) task.getTaskParam();
 				Alarm alarm = new Alarm(MainActivity.this, strvoice);
 				alarm.Execute();
+			}
+				break;
+			case Task.Weather: {
+				HashMap weatherInfos = (HashMap)task.getTaskParam();
+				String city = (String) weatherInfos.get("city");
+				int day = (Integer) weatherInfos.get("day");
+				System.out.println(city+":"+day);
+				mWeather = new Weather(city,day, MainActivity.this);
+				String weatherInfo;
+				try {
+					weatherInfo = mWeather.execute();
+					updateListView(R.layout.chat_helper, weatherInfo);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 				break;
 			case Task.ShowProcess: {

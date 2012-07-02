@@ -26,6 +26,7 @@ public class Task {
 	public final static int SwitchOnDevice = 4;//打开一个硬件
 	public final static int Search = 5;//搜索
 	public final static int SetAlarm = 6;//设置闹钟
+	public final static int Weather = 7;//设置闹钟
 	public final static int IdentifyError = -1;//匹配错误
 	
 	public final static int ShowProcess = -2;//显示识别中的进度条
