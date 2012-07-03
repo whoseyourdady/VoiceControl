@@ -13,6 +13,7 @@
 
 package com.scut.vc.utility;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,7 +45,7 @@ public class DeviceControl {
 	 */
 	private Activity mActivity;
 
-	private Camera mCamera;// 手机筒
+	private Camera mCamera = null;// 手机筒
 	private Camera.Parameters parameter; // 手电筒参数
 	private WifiManager mWifiManager;// wifi管理器
 	private BluetoothAdapter mBlueTooth;// 蓝牙管理器
@@ -72,8 +73,18 @@ public class DeviceControl {
 	public void initialTorch() {
 		
 		// mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
-		mCamera = Camera.open();
-		parameter = mCamera.getParameters();
+		if (mCamera == null) {
+			mCamera = Camera.open();
+			parameter = mCamera.getParameters();
+		} else {
+			try {
+				mCamera.reconnect();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	private void initial() {
@@ -265,6 +276,7 @@ public class DeviceControl {
 
 	public void Release() {
 		mCamera.release();
+		mCamera = null;
 	}
 
 	public void Execute(Device device) {

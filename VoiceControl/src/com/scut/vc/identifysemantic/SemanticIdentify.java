@@ -133,7 +133,7 @@ public class SemanticIdentify {
 					}*/
 				}
 			}
-			if (maxScore == 0) {
+			if (maxScore < 0.41) {
 				System.out.println("没有对应的命令！");
 				task = new Task(Task.IdentifyError, null);
 			} else {				

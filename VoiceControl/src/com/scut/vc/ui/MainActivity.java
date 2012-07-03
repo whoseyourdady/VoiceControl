@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.iflytek.a.a;
 import com.iflytek.speech.RecognizerResult;
 import com.iflytek.speech.SpeechConfig.RATE;
 import com.iflytek.speech.SpeechError;
@@ -115,8 +116,17 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 		// Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		// Test(task);
-		// mDevCon.Release();f
-		voiceString = "打开相机";
+		// mDevCon.Release();
+		ArrayList<AppsManager.Package_Info> appList = new ArrayList<AppsManager.Package_Info>();
+		AppsManager.Package_Info info1 = mAppManager.new Package_Info("相机",
+				"com.miui.camera");
+		AppsManager.Package_Info info2 = mAppManager.new Package_Info("天天动听",
+				"com.sds.android.ttpod");
+		// voiceString = "打开相机";
+		appList.add(info1);
+		appList.add(info2);
+		Task task = new Task(Task.OpenApp, appList);
+		Test(task);
 
 	}
 
@@ -270,7 +280,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					String phoneNum = callList.get(0).GetNumber();
 					mContact.CallPerson(phoneNum);
 				} else if (1 < callList.size()) {
-					ShowSelectDialog(callList, task);
+					ShowContactSelectDialog(callList, task);
 				}
 			}
 				break;
@@ -285,14 +295,30 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					String phoneNum = msgList.get(0).GetNumber();
 					mContact.SendMsg(phoneNum, "");
 				} else if (1 < msgList.size()) {
-					ShowSelectDialog(msgList, task);
+					ShowContactSelectDialog(msgList, task);
 				}
 			}
 				break;
 			case Task.OpenApp: {
 
-				String packname = (String) task.getTaskParam();
-				mAppManager.Execute(packname);
+				ArrayList<AppsManager.Package_Info> appList = (ArrayList<AppsManager.Package_Info>) task
+						.getTaskParam();
+				if (0 == appList.size()) {
+
+				} else if (1 == appList.size()) {
+					String packname = ((AppsManager.Package_Info) appList
+							.get(0)).GetPackageName();
+					String appName = ((AppsManager.Package_Info) appList.get(0))
+							.GetAppName();
+					if (appName.contains("相机") || appName.contains("Camera")
+							|| appName.contains("camera")) {
+						mDevCon.Release();
+					}
+					mAppManager.Execute(packname);
+				} else if (1 < appList.size()) {
+					ShowAppSelectDialog(appList, task);
+				}
+
 			}
 				break;
 			case Task.Search: {
@@ -490,13 +516,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	}
 
 	/**
-	 * 对列表框的重用
+	 * 联系人对列表框的重用
 	 * 
 	 * @param items
 	 * @param task
 	 */
-	public void ShowSelectDialog(final ArrayList<Contact.ContactPerson> list,
-			final Task task) {
+	public void ShowContactSelectDialog(
+			final ArrayList<Contact.ContactPerson> list, final Task task) {
 		final String[] items = new String[list.size()];
 		for (int n = 0; n < list.size(); n++) {
 			items[n] = ((Contact.ContactPerson) list.get(n)).GetName();
@@ -508,6 +534,38 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
 						ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson>();
+						_list.add(list.get(which));
+						Task _task = new Task(task.getTaskID(), _list);
+						Message msg = new Message();
+						msg.obj = _task;
+						mhandler.sendMessage(msg);
+					}
+				});
+
+		AlertDialog dialog = builder.create();
+		dialog.show();
+
+	}
+
+	/**
+	 * 应用程序对列表框的重用
+	 * 
+	 * @param items
+	 * @param task
+	 */
+	public void ShowAppSelectDialog(
+			final ArrayList<AppsManager.Package_Info> list, final Task task) {
+		final String[] items = new String[list.size()];
+		for (int n = 0; n < list.size(); n++) {
+			items[n] = ((AppsManager.Package_Info) list.get(n)).GetAppName();
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("请选择").setItems(items,
+				new android.content.DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						ArrayList<AppsManager.Package_Info> _list = new ArrayList<AppsManager.Package_Info>();
 						_list.add(list.get(which));
 						Task _task = new Task(task.getTaskID(), _list);
 						Message msg = new Message();
@@ -533,7 +591,6 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// TODO Auto-generated method stub
 		DeviceControl.Device device = mDevCon.new Device("flash", false);
 		mDevCon.Execute(device);
-		mDevCon.Release();
 		super.onStop();
 	}
 
