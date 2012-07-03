@@ -1,5 +1,6 @@
 package com.scut.vc.alarm;
 
+import android.annotation.SuppressLint;
 import java.util.Calendar;
 /**
  * 将输入的字符串转化为具体的时间格式
@@ -296,7 +297,7 @@ public class Str2DateTime {
 				}
 				date = formatDate(year,month + 1,2);							
 			}else{
-				date = formatDate(year, month, day);
+				date = formatDate(year, month, day+2);
 			}
 		}
 		return date;

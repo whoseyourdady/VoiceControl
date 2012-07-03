@@ -65,7 +65,6 @@ public class SinaLifeHandler extends DefaultHandler{
 		 * <element>characters</element>
 		 */
 		String tmp = new String(ch, start, length);
-		Log.v("Weather", tmp);
 		if(tagName.equals("status1")){
 			lccinfo.setDayWeather(tmp);
 		}else if(tagName.equals("status2")){

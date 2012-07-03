@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,6 +42,7 @@ import com.iflytek.speech.SpeechError;
 import com.iflytek.speech.SynthesizerPlayer;
 import com.iflytek.ui.RecognizerDialog;
 import com.iflytek.ui.RecognizerDialogListener;
+import com.scut.vc.alarm.AlarmService;
 import com.scut.vc.identifysemantic.IdentifyThread;
 import com.scut.vc.identifysemantic.SemanticIdentify;
 import com.scut.vc.utility.Alarm;
@@ -55,7 +57,7 @@ import com.scut.vc.xflib.ChatAdapter;
 import com.scut.vc.xflib.ChatEng;
 
 public class MainActivity extends Activity implements RecognizerDialogListener,
-		OnClickListener {
+OnClickListener {
 	/** Called when the activity is first created. */
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
@@ -162,27 +164,30 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		switch (item.getItemId()) {
 		case Menu.FIRST + 1:
 			Toast.makeText(this, "打开设置界面", Toast.LENGTH_SHORT).show();
-			Intent intent2 = new Intent();
-			intent2.setClass(this, SettingActivity.class);
-			startActivity(intent2);
-			break;
+		Intent intent2 = new Intent();
+		intent2.setClass(this, SettingActivity.class);
+		startActivity(intent2);
+		break;
 		case Menu.FIRST + 2:
 			Toast.makeText(this, "打开帮助界面", Toast.LENGTH_SHORT).show();
-			Intent intent1 = new Intent();
-			intent1.setClass(this, HelpActivity.class);
-			startActivity(intent1);
-			break;
+		Intent intent1 = new Intent();
+		intent1.setClass(this, HelpActivity.class);
+		startActivity(intent1);
+		break;
 
 		case Menu.FIRST + 3:
 			Toast.makeText(this, "打开闹钟列表", Toast.LENGTH_SHORT).show();
-			Intent intent3 = new Intent();
-			intent3.setClass(this, AlarmActivity.class);
-			startActivity(intent3);
-			break;
+		Intent intent3 = new Intent();
+		intent3.setClass(this, AlarmActivity.class);
+		startActivity(intent3);
+		break;
 		case Menu.FIRST + 4:
 			Toast.makeText(this, "退出应用程序", Toast.LENGTH_SHORT).show();
-			android.os.Process.killProcess(android.os.Process.myPid());
-			break;
+		Intent i = new Intent(MainActivity.this,AlarmService.class);
+		stopService(i);
+		android.os.Process.killProcess(android.os.Process.myPid());
+
+		break;
 		}
 		return false;
 	}
@@ -279,7 +284,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			case Task.CALL: {
 				@SuppressWarnings("unchecked")
 				ArrayList<Contact.ContactPerson> callList = (ArrayList<Contact.ContactPerson>) task
-						.getTaskParam();
+				.getTaskParam();
 				if (0 == callList.size()) {
 					mAppManager.Execute("com.android.contacts");
 				} else if (1 == callList.size()) {
@@ -289,12 +294,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					ShowContactSelectDialog(callList, task);
 				}
 			}
-				break;
+			break;
 			case Task.SendMessage: {
 
 				@SuppressWarnings("unchecked")
 				ArrayList<Contact.ContactPerson> msgList = (ArrayList<Contact.ContactPerson>) task
-						.getTaskParam();
+				.getTaskParam();
 				if (0 == msgList.size()) {
 					// mAppManager.Execute("com.android.contacts");
 				} else if (1 == msgList.size()) {
@@ -304,7 +309,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					ShowContactSelectDialog(msgList, task);
 				}
 			}
-				break;
+			break;
 			case Task.OpenApp: {
 
 				ArrayList<AppsManager.Package_Info> appList = (ArrayList<AppsManager.Package_Info>) task
@@ -326,24 +331,24 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				}
 
 			}
-				break;
+			break;
 			case Task.Search: {
 				String search = (String) task.getTaskParam();
 				mWebSearch.Execute(search);
 			}
-				break;
+			break;
 			case Task.SwitchOnDevice: {
 				DeviceControl.Device device = (DeviceControl.Device) task
 						.getTaskParam();
 				mDevCon.Execute(device);
 			}
-				break;
+			break;
 			case Task.SetAlarm: {
 				String strvoice = (String) task.getTaskParam();
 				Alarm alarm = new Alarm(MainActivity.this, strvoice);
 				alarm.Execute();
 			}
-				break;
+			break;
 			case Task.Weather: {
 				HashMap weatherInfos = (HashMap) task.getTaskParam();
 				String city = (String) weatherInfos.get("city");
@@ -365,7 +370,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					e.printStackTrace();
 				}
 			}
-				break;
+			break;
 			case Task.ShowProcess: {
 				if (!showProgressDiaglog) {
 					pd.setVisibility(View.VISIBLE);
@@ -386,7 +391,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 					showProgressDiaglog = false;
 				}
 			}
-				break;
+			break;
 			case Task.IdentifyError: {
 
 				// speakString("对不起哦，找不到你的命令");
@@ -544,16 +549,16 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		builder.setTitle("请选择").setItems(items,
 				new android.content.DialogInterface.OnClickListener() {
 
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson>();
-						_list.add(list.get(which));
-						Task _task = new Task(task.getTaskID(), _list);
-						Message msg = new Message();
-						msg.obj = _task;
-						mhandler.sendMessage(msg);
-					}
-				});
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson>();
+				_list.add(list.get(which));
+				Task _task = new Task(task.getTaskID(), _list);
+				Message msg = new Message();
+				msg.obj = _task;
+				mhandler.sendMessage(msg);
+			}
+		});
 
 		AlertDialog dialog = builder.create();
 		dialog.show();
@@ -576,16 +581,16 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		builder.setTitle("请选择").setItems(items,
 				new android.content.DialogInterface.OnClickListener() {
 
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						ArrayList<AppsManager.Package_Info> _list = new ArrayList<AppsManager.Package_Info>();
-						_list.add(list.get(which));
-						Task _task = new Task(task.getTaskID(), _list);
-						Message msg = new Message();
-						msg.obj = _task;
-						mhandler.sendMessage(msg);
-					}
-				});
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				ArrayList<AppsManager.Package_Info> _list = new ArrayList<AppsManager.Package_Info>();
+				_list.add(list.get(which));
+				Task _task = new Task(task.getTaskID(), _list);
+				Message msg = new Message();
+				msg.obj = _task;
+				mhandler.sendMessage(msg);
+			}
+		});
 
 		AlertDialog dialog = builder.create();
 		dialog.show();
@@ -641,4 +646,14 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		return mDevCon;
 	}
 
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			MainActivity.this.finish();
+			Intent i = new Intent(MainActivity.this,AlarmService.class);
+			stopService(i);
+
+			Log.v("Work", "MainActivity End");
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

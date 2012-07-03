@@ -134,6 +134,7 @@ public class LifeCurrentCondition implements Serializable{
 	public String[] listString()
 	{
 		String[] str = new String[11];
+
 		str[0] = "穿衣指数:"+cy;
 		str[1] = "运动指数:"+yd;
 		str[2] = "感冒指数:" +gm;
