@@ -17,7 +17,7 @@
         android:key="searchEngine"
         android:summary="百度搜索引擎"
         android:title="搜索引擎选择" />
-
+	
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="cb21"
