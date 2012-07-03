@@ -53,9 +53,7 @@ public class AlarmActivity extends Activity{
 		setContentView(R.layout.clock);
 		Log.v("Work", "Activity start!");
 		mydb = new DatabaseHelper(AlarmActivity.this);
-		refresh();	    
-		//NewAlarm();
-		//StopAlarmService();		    
+		refresh();	    	    
 	}
 
 
@@ -86,6 +84,10 @@ public class AlarmActivity extends Activity{
 		alarmListView.setAdapter(new MyAlarmAdapter(AlarmActivity.this, states,tempTimes,tempDate,ids));
 	}
 
+	/**
+	 * 设置返回键杀死当前Activity是为了防止Activity不可见时仍对Service
+	 * 产生作用
+	 */
 	@SuppressLint("ParserError")
 	public boolean onKeyDown(int keyCode, KeyEvent event){
 		if(keyCode == KeyEvent.KEYCODE_BACK){

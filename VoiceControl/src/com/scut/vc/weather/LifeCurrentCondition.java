@@ -134,17 +134,18 @@ public class LifeCurrentCondition implements Serializable{
 	public String[] listString()
 	{
 		String[] str = new String[11];
-		str[0] = " 穿衣指数:"+cy +";";
-		str[1] = " 运动指数:"+yd;
-		str[2] = " 感冒指数:" +gm;
-		str[3] = " 空调指数:" +kt;
-		str[4] = " 体感指数：" + feel;
-		str[5] = "白天    天气：" + dayWeather;
-		str[6] = "晚上    天气：" + nightWeather;
-		str[7] = " 温度：" + dayTemp + "℃ ";
-		str[8] = " 温度：" + nightTemp + "℃ ";
-		str[9] = " 风向：" + dayDirection+"; ";
-		str[10] = " 风向：" + nightDirection+"; ";
+
+		str[0] = "穿衣指数:"+cy;
+		str[1] = "运动指数:"+yd;
+		str[2] = "感冒指数:" +gm;
+		str[3] = "空调指数:" +kt;
+		str[4] = "体感指数：" + feel;
+		str[5] = "白天： " + dayWeather;
+		str[6] = "晚上： " + nightWeather;
+		str[7] = " " + dayTemp + "℃";
+		str[8] = " " + nightTemp + "℃";
+		str[9] = " " + dayDirection;
+		str[10] = " " + nightDirection;
 		return str;
 		
 	}

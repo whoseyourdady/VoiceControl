@@ -6,24 +6,23 @@
     android:background="@drawable/mywb"
     android:orientation="vertical" >
 
-    <RelativeLayout
-        android:id="@+id/RelativeLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-    </RelativeLayout>
-
-    <ListView
+    
+    <FrameLayout android:layout_width="fill_parent" 
+        android:layout_height="fill_parent">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+        <ListView
         android:id="@+id/chatlist"
         android:layout_width="fill_parent"
-        android:layout_height="314dp"
+        android:layout_height="fill_parent"
         android:layout_weight="2"
         android:cacheColorHint="#00000000"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" >
     </ListView>
-
-    <ImageButton 
+        <ImageButton 
         android:id="@+id/helper_voice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,8 +30,24 @@
         android:background="@android:color/transparent"
         android:src="@drawable/voice_helper_sl" >
     </ImageButton>
-
-</LinearLayout><!--
-		android:dividerHeight="0dip" android:cacheColorHint="#00000000"
-		android:listSelector="@drawable/chatitem"
--->
+    </LinearLayout>
+    <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/progress_bg" />
+        <ProgressBar
+        android:id="@+id/progressBar1"
+        style="@style/myProgressStyle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center" />
+        <TextView android:id="@+id/textView1" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="正在解析...." 
+            android:textColor="@android:color/black" 
+            android:layout_gravity="center"/>
+    </FrameLayout>
+</LinearLayout>

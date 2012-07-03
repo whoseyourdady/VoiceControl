@@ -68,6 +68,31 @@ public class AppsManager {
 		public String mVersionName = "";
 		public int mVersionCode = 0;
 		public Drawable mIcon;
+		
+		public Package_Info(){
+		}
+		
+		public Package_Info(String strAppName, String strPackageName){
+			this.mAppName = strAppName;
+			this.mPackageName = strPackageName;
+		}
+		
+		public String GetAppName() {
+			return this.mAppName;
+		}
+
+		public String GetPackageName() {
+			return this.mPackageName;
+		}
+
+		public void SetAppName(String strAppName) {
+			this.mAppName = strAppName;
+		}
+
+		public void SetPackageName(String strPackageName) {
+			this.mPackageName = strPackageName;
+		}
+		
 	}
 
 	// 打开应用,参数为指定的包名

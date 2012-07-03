@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import com.scut.vc.location.GetLocation;
 import com.scut.vc.ui.MainActivity;
 import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.AppsManager.Package_Info;
@@ -43,7 +44,7 @@ public class SemanticIdentify {
 			{ "打电话给", "打电话", "电话", "拨打", "打给", "接通" }, // 打电话的关键字
 			{ "发短信给", "发短信到", "发短信", "短信给", "短信" }, // 发短信的关键字
 			{ "什么", "搜索", "查找" }, // 网络搜索的关键字
-			{ "闹钟", "提醒", "点钟", "点", "小时", "分钟" }, // 设置提醒的关键字
+			{ "闹钟", "提醒", "点钟", "点", "小时", "分钟",":" }, // 设置提醒的关键字
 			{ "天气怎么样", "天气"}, // 天气的关键字
 	// {"设置", "打开", "关闭", "关上", "关掉"}, //设置系统的关键字
 	// {"网易","腾讯","搜狐"},//要识别出来的知名网站
@@ -78,12 +79,12 @@ public class SemanticIdentify {
 			if (identifyFinish)
 				break;
 		}
-		if (!(strSystemKey(strVoice).equals("")) && type != 4) {
+		if (!(strSystemKey(strVoice).equals("")) && type != 1 && type != 2 && type != 3 && type != 4 ) {
 			type = SETSYSTEM;
 		}
 		//由于strWeb函数返回的是此strVoice字符串中是否含有名站的判断
 		//故如果strVoice中含有名站的关键字时，就进行搜索case，在webSearch.java中在地名站的url进行识别
-		if ((strWeb(strVoice)) && type!=4){
+		if ((strWeb(strVoice)) && type != 1 && type != 2 && type != 3 && type != 4 && type!=5){
 			type = SEARCH;
 		}
 
@@ -92,36 +93,54 @@ public class SemanticIdentify {
 			// 创建新的AppsManager实例
 			ArrayList<Package_Info> appsList = mAppManager
 					.getInstalledAppsList();
+			//创建识别出来的候选程序列表
+			ArrayList<Package_Info> resultsList = new ArrayList<Package_Info>();
 			int appsSize = appsList.size();
 			double maxScore = 0;
-			int flag = -1;// 标识哪个是需打开程序
 			System.out.println("strVoice= " + strVoice);
-			/*
-			 * 此处由于没有完善存在多个匹配项的情况，所以先假设存在一个情况
-			 */
-			String strResult = "";
+			
 			for (int i = 0; i < appsSize; i++) {
 				Package_Info pi = appsList.get(i);
 				String strAppName = pi.mAppName;
+				String strPackageName = pi.mPackageName;
 				double score = strAppScore(strVoice, strAppName);
+				/*System.out.println("strVoice     ==     " + CnToSpell.getPingYin(strVoice) + "      strAppName     "+CnToSpell.getPingYin(strAppName));
 				System.out.println("1 = " + pi.mAppName);
 				System.out.println("2 = " + pi.mPackageName);
 				System.out.println("score=" + score);
-				if (score >= maxScore) {
-					strResult = strAppName;
-					flag = i;
+				System.out.println("1 = " + pi.mAppName +"             length =  "+strAppName.length());*/
+				//分两种情况
+				//1、与最高评分的应用评分一致，那么把该应用添加进候选程序列表
+				//2、评分比最高评分的应用高，那么清空原来的候选程序列表，同时吧该应用添加进列表
+				if ( (score >= maxScore-0.2) && (score <= maxScore+0.2) ){
+					resultsList.add(mAppManager.new Package_Info(strAppName, strPackageName));
 					maxScore = score;
-					System.out.println("maxScore=" + maxScore + "  = "
-							+ pi.mAppName + "  = " + pi.mPackageName);
+					/*System.out.println("maxScore=" + maxScore + "  = "
+							+ pi.mAppName + "  = " + pi.mPackageName);			
+					for(int j=0;j<resultsList.size();j++){
+						System.out.println("候选应用列表       " + resultsList.get(j));
+					}*/
+				}
+				if( score > maxScore+0.2 ){
+					//清空原来的候选程序列表
+					resultsList.clear();
+					resultsList.add(mAppManager.new Package_Info(strAppName, strPackageName));
+					maxScore = score;
+					/*System.out.println("maxScore=" + maxScore + "  = "
+							+ pi.mAppName + "  = " + pi.mPackageName);	
+					for(int j=0;j<resultsList.size();j++){
+						System.out.println("候选应用列表       " + resultsList.get(j));
+					}*/
 				}
 			}
-			if (maxScore == 0) {
+			if (maxScore < 0.41) {
 				System.out.println("没有对应的命令！");
 				task = new Task(Task.IdentifyError, null);
-			} else {
-				System.out.println("打开应用" + strResult);
-				String packName = ((Package_Info) appsList.get(flag)).mPackageName;
-				task = new Task(Task.OpenApp, packName);
+			} else {				
+				for(int i=0;i<resultsList.size();i++){
+					System.out.println("打开应用       " + resultsList.get(i).GetAppName() + "             " + resultsList.get(i).GetPackageName());					
+				}
+				task = new Task(Task.IdentifyError,null);
 			}
 
 			break;
@@ -396,7 +415,6 @@ public class SemanticIdentify {
 			break;
 		case SETSYSTEM: {
 			// {"设置", "打开", "关闭", "关上", "关掉"},
-
 			String strHW = strSystemKey(strVoice);// 识别出要打开的硬件
 			boolean flag = false;
 
@@ -421,7 +439,8 @@ public class SemanticIdentify {
 		case WEATHER:{
 			String City;
 			int day;
-			City = "广州";
+			GetLocation g = new GetLocation(this.mActivity);
+			City = g.getCity().replace("市", "");
 			if(strVoice.contains("今天")){
 				day = 0;
 			}else if(strVoice.contains("明天")){
@@ -461,7 +480,7 @@ public class SemanticIdentify {
 
 	// 若含有数字串，则返回表示数字串的string
 	// 若不含有数字串，则返回表示空的string串""
-	public static String containNum(String str) {
+	public  String containNum(String str) {
 		int length = str.length();
 		int begin = 0;
 		int end = 0;
@@ -487,24 +506,43 @@ public class SemanticIdentify {
 			return "";
 		}
 	}
+	
+	// 拼音得分函数，采用了比较整个字符的拼音的方法来比较得分
+		public  double strAppScore(String base, String var) {
+			String basePY = CnToSpell.getPingYin(base).toLowerCase();// base变量的拼音
+			
+			int denominator = var.length();// 得分的分母
+			int numerator = 0;// 得分的分子
 
-	// 拼音得分函数，采用了比较拼音首字母的方法来比较得分
-	public static double strAppScore(String base, String var) {
-		String baseHead = CnToSpell.getPinYinHeadChar(base).toLowerCase();// base变量的拼音首字母
-		String varHead = CnToSpell.getPinYinHeadChar(var).toLowerCase();// var变量的拼音首字母
-		int denominator = varHead.length();// 得分的分母
-		int numerator = 0;// 得分的分子
-
-		for (int i = 0; i < denominator; i++) {
-			if (baseHead.contains(varHead.substring(i, i + 1))) {
-				numerator++;
+			for (int i = 0; i < denominator; i++) {
+				if (basePY.contains(CnToSpell.getPingYin(var.substring(i,i+1).toLowerCase()))) {
+					numerator++;
+				}
 			}
+			double score = numerator * 1.0 / denominator;
+			return score;
 		}
-		double score = numerator * 1.0 / denominator;
-		return score;
-	}
 
-	public static double strContactScore(String base, String var) {
+
+
+		// 拼音得分函数，采用了比较拼音首字母的方法来比较得分
+		public  double strAppScore_1(String base, String var) {
+			String baseHead = CnToSpell.getPinYinHeadChar(base).toLowerCase();// base变量的拼音首字母
+			String varHead = CnToSpell.getPinYinHeadChar(var).toLowerCase();// var变量的拼音首字母
+			int denominator = varHead.length();// 得分的分母
+			int numerator = 0;// 得分的分子
+
+			for (int i = 0; i < denominator; i++) {
+				if (baseHead.contains(varHead.substring(i, i + 1))) {
+					numerator++;
+				}
+			}
+			double score = numerator * 1.0 / denominator;
+			return score;
+		}
+
+
+	public  double strContactScore(String base, String var) {
 		int denominator = var.length();// 得分的分母
 		double numerator = 0;// 得分的分子
 		boolean containEnglish = false;
@@ -555,7 +593,7 @@ public class SemanticIdentify {
 		return score;
 	}
 
-	public static String strSystemKey(String strVoice) {
+	public  String strSystemKey(String strVoice) {
 		// 目前包含的硬件模块的识别内容包括：WIFI,GPRS,GPS,蓝牙，手电筒，飞行模式
 		String[][] systemKey = {// 包含硬件名的关键字的数组
 		{ "wifi", "无线" },// "无线"表示"无线网络"，即"wifi"
@@ -609,7 +647,7 @@ public class SemanticIdentify {
 
 	}
 	
-	public static boolean strWeb(String strVoice) {
+	public  boolean strWeb(String strVoice) {
 		String[] webKey = WebSearch.webKey;
 		int length = webKey.length;
 		for(int i=0;i<length;i++){
@@ -620,7 +658,7 @@ public class SemanticIdentify {
 		return false;
 	}
 
-	public static String[] getTimeFromStr(String str) {
+	public  String[] getTimeFromStr(String str) {
 		String num[] = new String[2];
 		num[1] = num[0] = "";
 		boolean aNum = false;
