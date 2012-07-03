@@ -139,7 +139,7 @@ public class Weather {
 			day = "½ñÌì";
 		}
 		String WeatherInfos = WeatherInfo[5] + WeatherInfo[7] + WeatherInfo[9] 
-				+" " + WeatherInfo[6] + WeatherInfo[8] + WeatherInfo[10]+ 
+				+"\n" + WeatherInfo[6] + WeatherInfo[8] + WeatherInfo[10]+ "\n" +
 				WeatherInfo[0] + WeatherInfo[1]+ WeatherInfo[2]+ WeatherInfo[3]+ WeatherInfo[4];
 		return WeatherInfos;
 	}

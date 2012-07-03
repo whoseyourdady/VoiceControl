@@ -22,6 +22,22 @@
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" >
     </ListView>
+    <FrameLayout android:layout_width="match_parent" 
+        android:layout_height="wrap_content">
+        <ProgressBar
+        android:id="@+id/progressBar1"
+        style="@style/myProgressStyle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center" />
+        <TextView android:id="@+id/textView1" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="正在解析...." 
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    
 
     <ImageButton 
         android:id="@+id/helper_voice"
