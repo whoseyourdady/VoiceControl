@@ -102,7 +102,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		//Test(task);
 		//mDevCon.Release();
-		//voiceString = "下午五点闹钟";
+		voiceString = "闪光灯";
 
 
 	}
@@ -411,9 +411,19 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
 		voiceString = voiceTempString;
-		updateListView(R.layout.chat_user, voiceString);
+		updateListView(R.layout.chat_user, voiceTempString);
 		voiceTempString = "";
 
+	}
+	
+	
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		DeviceControl.Device device = mDevCon.new Device("flash", false);
+		mDevCon.Execute(device);
+		super.onStop();
 	}
 
 	/**

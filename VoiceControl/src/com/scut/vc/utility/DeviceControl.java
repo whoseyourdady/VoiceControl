@@ -68,10 +68,11 @@ public class DeviceControl {
 	private void initial() {
 		/**
 		 * 手电筒初始化
+		 * 电筒不在这里初始化了
 		 */
 		// mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
-		mCamera = Camera.open();
-		parameter = mCamera.getParameters();
+//		mCamera = Camera.open();
+//		parameter = mCamera.getParameters();
 
 		/**
 		 * GPS
@@ -153,11 +154,14 @@ public class DeviceControl {
 	 */
 	private void EnableTorch(boolean enable) {
 		if (enable) {
+			mCamera = Camera.open();
+			parameter = mCamera.getParameters();
 			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
 			mCamera.setParameters(parameter);
 		} else {
 			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 			mCamera.setParameters(parameter);
+			Release();
 		}
 	}
 
