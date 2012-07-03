@@ -29,6 +29,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iflytek.speech.RecognizerResult;
@@ -69,9 +71,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private SharedPreferences mSharedPreferences;
 	private RecognizerDialog iatDialog;
 	private String infos = null;
-	public static String voiceString = "上海明天天气怎么样";// 语音服务提供商返回的处理字符串
+	public static String voiceString = "";// 语音服务提供商返回的处理字符串
 	public static String voiceTempString = ""; // 讯飞语音返回临时存放的字符串
-	public ProgressDialog pd;// 识别中进度条
+
+	public ProgressBar pd;// 识别中进度条
+
+	public TextView tv; // 识别中的文字说明
 	private boolean showProgressDiaglog = false;
 	public static boolean EnableGoogleVoice = false;// 使用google API
 	public static boolean EnableXunfeiVoice = true;// 使用讯飞 API
@@ -82,6 +87,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
 		inital();
 		Thread thread = new Thread((mThread = new IdentifyThread(this)));
 		thread.start();
@@ -104,14 +110,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		// Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		//DeviceControl.Device device = mDevCon.new Device("flash", false);
-		//Task task = new Task(Task.SwitchOnDevice, device);
+		// DeviceControl.Device device = mDevCon.new Device("flash", false);
+		// Task task = new Task(Task.SwitchOnDevice, device);
 
-		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
-		//Test(task);
-		//mDevCon.Release();
-		voiceString = "闪光灯";
-
+		// Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
+		// Test(task);
+		// mDevCon.Release();f
+		voiceString = "打开相机";
 
 	}
 
@@ -187,10 +192,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		ImageButton ib = (ImageButton) findViewById(R.id.helper_voice);
 
 		/**
-		 * 语义解析时的progressBar显示
+		 * 语义解析时的progressBar显示和文字说明
 		 */
-		pd = new ProgressDialog(this);
-		pd.setMessage("正在解析...");
+		pd = (ProgressBar) findViewById(R.id.progressBar1);
+		tv = (TextView) findViewById(R.id.textView1);
+		pd.setVisibility(View.INVISIBLE);
+		tv.setVisibility(View.INVISIBLE);
+		showProgressDiaglog = false;
 
 		/**
 		 * 讯飞窗口初始化
@@ -224,16 +232,15 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				String voiceEngine = sharedata1.getString("voiceEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
 				System.out.println("voiceEngine = " + voiceEngine);
 
-
-				//由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
+				// 由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
 				if (voiceEngine.equals("1")) {// EnableXunfeiVoice
 					showIatDialog();
-//					voiceString = "23点开会";
-//					updateListView(R.layout.chat_user, voiceString);
+					// voiceString = "23点开会";
+					// updateListView(R.layout.chat_user, voiceString);
 				} else if (voiceEngine.equals("2")) {// EnableGoogleVoice
 					startVoiceRecognitionActivity();
-//					voiceString = "23点半开会";
-//					updateListView(R.layout.chat_user, voiceString);
+					// voiceString = "23点半开会";
+					// updateListView(R.layout.chat_user, voiceString);
 
 				}
 			}
@@ -283,6 +290,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.OpenApp: {
+
 				String packname = (String) task.getTaskParam();
 				mAppManager.Execute(packname);
 			}
@@ -304,12 +312,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				alarm.Execute();
 			}
 				break;
-			case Task.Weather: {   
-				HashMap weatherInfos = (HashMap)task.getTaskParam();
+			case Task.Weather: {
+				HashMap weatherInfos = (HashMap) task.getTaskParam();
 				String city = (String) weatherInfos.get("city");
 				int day = (Integer) weatherInfos.get("day");
-				System.out.println(city+":"+day);
-				mWeather = new Weather(city,day, MainActivity.this);
+				System.out.println(city + ":" + day);
+				mWeather = new Weather(city, day, MainActivity.this);
 				String weatherInfo;
 				try {
 					weatherInfo = mWeather.execute();
@@ -328,10 +336,14 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				break;
 			case Task.ShowProcess: {
 				if (!showProgressDiaglog) {
-					pd.show();
+					pd.setVisibility(View.VISIBLE);
+					tv.setVisibility(View.VISIBLE);
+
 					showProgressDiaglog = true;
 				} else {
-					pd.cancel();
+					pd.setVisibility(View.INVISIBLE);
+					tv.setVisibility(View.INVISIBLE);
+
 					showProgressDiaglog = false;
 				}
 			}
@@ -445,16 +457,6 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		voiceTempString = "";
 
 	}
-	
-	
-
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		DeviceControl.Device device = mDevCon.new Device("flash", false);
-		mDevCon.Execute(device);
-		super.onStop();
-	}
 
 	/**
 	 * 讯飞传回的结果
@@ -517,6 +519,22 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		AlertDialog dialog = builder.create();
 		dialog.show();
 
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		mDevCon.initialTorch();
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		DeviceControl.Device device = mDevCon.new Device("flash", false);
+		mDevCon.Execute(device);
+		mDevCon.Release();
+		super.onStop();
 	}
 
 	/**

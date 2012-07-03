@@ -3,5 +3,6 @@
 
     <color name="window_bg">#85c8f3</color>
     <color name="transparent">#00000000</color>
+    <color name="white">#00000000</color>
 
 </resources>

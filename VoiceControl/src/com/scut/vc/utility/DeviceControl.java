@@ -65,15 +65,22 @@ public class DeviceControl {
 		initial();// 初始化
 	}
 
-	private void initial() {
-		/**
-		 * 手电筒初始化
-		 * 电筒不在这里初始化了
-		 */
+	/**
+	 * 手电筒初始化
+	 * 电筒不在这里初始化了
+	 */
+	public void initialTorch() {
+		
 		// mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
 		mCamera = Camera.open();
 		parameter = mCamera.getParameters();
+	}
+	
+	private void initial() {
+		
 
+		initialTorch();
+		
 		/**
 		 * GPS
 		 */
@@ -155,7 +162,9 @@ public class DeviceControl {
 	private void EnableTorch(boolean enable) {
 		if (enable) {
 
+
 			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+
 			mCamera.setParameters(parameter);
 		} else {
 			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
