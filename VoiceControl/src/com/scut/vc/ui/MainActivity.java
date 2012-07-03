@@ -29,6 +29,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iflytek.speech.RecognizerResult;
@@ -69,9 +71,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private SharedPreferences mSharedPreferences;
 	private RecognizerDialog iatDialog;
 	private String infos = null;
-	public static String voiceString = "上海明天天气怎么样";// 语音服务提供商返回的处理字符串
+	public static String voiceString = "";// 语音服务提供商返回的处理字符串
 	public static String voiceTempString = ""; // 讯飞语音返回临时存放的字符串
-	public ProgressDialog pd;// 识别中进度条
+	public ProgressBar pd;// 识别中进度条
+	public TextView tv; //识别中的文字说明
 	private boolean showProgressDiaglog = false;
 	public static boolean EnableGoogleVoice = false;// 使用google API
 	public static boolean EnableXunfeiVoice = true;// 使用讯飞 API
@@ -83,8 +86,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		inital();
-		Thread thread = new Thread((mThread = new IdentifyThread(this)));
-		thread.start();
+		//Thread thread = new Thread((mThread = new IdentifyThread(this)));
+		//thread.start();
 
 		/**
 		 * 测度代码;
@@ -187,11 +190,10 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		ImageButton ib = (ImageButton) findViewById(R.id.helper_voice);
 
 		/**
-		 * 语义解析时的progressBar显示
+		 * 语义解析时的progressBar显示和文字说明
 		 */
-		pd = new ProgressDialog(this);
-		pd.setMessage("正在解析...");
-
+		pd = (ProgressBar)findViewById(R.id.progressBar1);
+		tv = (TextView)findViewById(R.id.textView1);
 		/**
 		 * 讯飞窗口初始化
 		 */
@@ -328,10 +330,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				break;
 			case Task.ShowProcess: {
 				if (!showProgressDiaglog) {
-					pd.show();
+					pd.setVisibility(View.VISIBLE);
+					tv.setVisibility(View.VISIBLE);
 					showProgressDiaglog = true;
 				} else {
-					pd.cancel();
+					pd.setVisibility(View.INVISIBLE);
+					tv.setVisibility(View.INVISIBLE);
 					showProgressDiaglog = false;
 				}
 			}

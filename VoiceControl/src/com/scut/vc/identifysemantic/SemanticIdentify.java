@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import com.scut.vc.location.GetLocation;
 import com.scut.vc.ui.MainActivity;
 import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.AppsManager.Package_Info;
@@ -421,7 +422,8 @@ public class SemanticIdentify {
 		case WEATHER:{
 			String City;
 			int day;
-			City = "广州";
+			GetLocation g = new GetLocation(this.mActivity);
+			City = g.getCity().replace("市", "");
 			if(strVoice.contains("今天")){
 				day = 0;
 			}else if(strVoice.contains("明天")){

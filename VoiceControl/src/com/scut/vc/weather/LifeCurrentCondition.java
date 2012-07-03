@@ -141,8 +141,8 @@ public class LifeCurrentCondition implements Serializable{
 		str[4] = " 体感指数：" + feel;
 		str[5] = "白天： " + dayWeather;
 		str[6] = "晚上： " + nightWeather;
-		str[7] = " " + dayTemp;
-		str[8] = " " + nightTemp;
+		str[7] = " " + dayTemp + "℃";
+		str[8] = " " + nightTemp + "℃";
 		str[9] = " " + dayDirection;
 		str[10] = " " + nightDirection;
 		return str;
