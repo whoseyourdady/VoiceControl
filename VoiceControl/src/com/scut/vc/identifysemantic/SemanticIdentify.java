@@ -98,36 +98,36 @@ public class SemanticIdentify {
 				String strAppName = pi.mAppName;
 				String strPackageName = pi.mPackageName;
 				double score = strAppScore(strVoice, strAppName);
-				/*System.out.println("strVoice     ==     " + CnToSpell.getPingYin(strVoice) + "      strAppName     "+CnToSpell.getPingYin(strAppName));
+				System.out.println("strVoice     ==     " + CnToSpell.getPingYin(strVoice) + "      strAppName     "+CnToSpell.getPingYin(strAppName));
 				System.out.println("1 = " + pi.mAppName);
 				System.out.println("2 = " + pi.mPackageName);
 				System.out.println("score=" + score);
-				System.out.println("1 = " + pi.mAppName +"             length =  "+strAppName.length());*/
+				System.out.println("1 = " + pi.mAppName +"             length =  "+strAppName.length());
 				//分两种情况
 				//1、与最高评分的应用评分一致，那么把该应用添加进候选程序列表
 				//2、评分比最高评分的应用高，那么清空原来的候选程序列表，同时吧该应用添加进列表
 				if ( (score >= maxScore-0.2) && (score <= maxScore+0.2) ){
 					resultsList.add(mAppManager.new Package_Info(strAppName, strPackageName));
 					maxScore = score;
-					/*System.out.println("maxScore=" + maxScore + "  = "
+					System.out.println("maxScore=" + maxScore + "  = "
 							+ pi.mAppName + "  = " + pi.mPackageName);			
 					for(int j=0;j<resultsList.size();j++){
 						System.out.println("候选应用列表       " + resultsList.get(j));
-					}*/
+					}
 				}
 				if( score > maxScore+0.2 ){
 					//清空原来的候选程序列表
 					resultsList.clear();
 					resultsList.add(mAppManager.new Package_Info(strAppName, strPackageName));
 					maxScore = score;
-					/*System.out.println("maxScore=" + maxScore + "  = "
+					System.out.println("maxScore=" + maxScore + "  = "
 							+ pi.mAppName + "  = " + pi.mPackageName);	
 					for(int j=0;j<resultsList.size();j++){
 						System.out.println("候选应用列表       " + resultsList.get(j));
-					}*/
+					}
 				}
 			}
-			if (maxScore == 0) {
+			if (maxScore < 0.41) {
 				System.out.println("没有对应的命令！");
 				task = new Task(Task.IdentifyError, null);
 			} else {				
