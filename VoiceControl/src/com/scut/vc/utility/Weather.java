@@ -140,7 +140,7 @@ public class Weather {
 		}
 		String WeatherInfos = WeatherInfo[5] + WeatherInfo[7] + WeatherInfo[9] 
 				+"\n" + WeatherInfo[6] + WeatherInfo[8] + WeatherInfo[10]+ "\n" +
-				WeatherInfo[0] + WeatherInfo[1]+ WeatherInfo[2]+ WeatherInfo[3]+ WeatherInfo[4];
+				WeatherInfo[0] +"\n" + WeatherInfo[1] +"\n"+ WeatherInfo[2] +"\n" + WeatherInfo[3] +"\n" + WeatherInfo[4];
 		return WeatherInfos;
 	}
 	
