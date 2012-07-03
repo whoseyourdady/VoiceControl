@@ -88,7 +88,7 @@ public class SemanticIdentify {
 			ArrayList<Package_Info> appsList = mAppManager
 					.getInstalledAppsList();
 			//创建识别出来的候选程序列表
-			ArrayList<String> resultsList = new ArrayList<String>();
+			ArrayList<Package_Info> resultsList = new ArrayList<Package_Info>();
 			int appsSize = appsList.size();
 			double maxScore = 0;
 			System.out.println("strVoice= " + strVoice);
@@ -107,7 +107,7 @@ public class SemanticIdentify {
 				//1、与最高评分的应用评分一致，那么把该应用添加进候选程序列表
 				//2、评分比最高评分的应用高，那么清空原来的候选程序列表，同时吧该应用添加进列表
 				if ( (score >= maxScore-0.2) && (score <= maxScore+0.2) ){
-					resultsList.add(strPackageName);
+					resultsList.add(mAppManager.new Package_Info(strAppName, strPackageName));
 					maxScore = score;
 					/*System.out.println("maxScore=" + maxScore + "  = "
 							+ pi.mAppName + "  = " + pi.mPackageName);			
@@ -118,7 +118,7 @@ public class SemanticIdentify {
 				if( score > maxScore+0.2 ){
 					//清空原来的候选程序列表
 					resultsList.clear();
-					resultsList.add(strPackageName);
+					resultsList.add(mAppManager.new Package_Info(strAppName, strPackageName));
 					maxScore = score;
 					/*System.out.println("maxScore=" + maxScore + "  = "
 							+ pi.mAppName + "  = " + pi.mPackageName);	
@@ -132,7 +132,7 @@ public class SemanticIdentify {
 				task = new Task(Task.IdentifyError, null);
 			} else {				
 				for(int i=0;i<resultsList.size();i++){
-					System.out.println("打开应用       " + resultsList.get(i));
+					System.out.println("打开应用       " + resultsList.get(i).GetAppName() + "             " + resultsList.get(i).GetPackageName());					
 				}
 				task = new Task(Task.IdentifyError,null);
 			}
