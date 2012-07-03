@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -75,6 +76,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public static String voiceTempString = ""; // 讯飞语音返回临时存放的字符串
 	public ProgressBar pd;// 识别中进度条
 	public TextView tv; //识别中的文字说明
+	public ImageView iv; //识别中的背景
+	private ImageButton ib; //识别按钮
 	private boolean showProgressDiaglog = false;
 	public static boolean EnableGoogleVoice = false;// 使用google API
 	public static boolean EnableXunfeiVoice = true;// 使用讯飞 API
@@ -86,8 +89,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		inital();
-		//Thread thread = new Thread((mThread = new IdentifyThread(this)));
-		//thread.start();
+		Thread thread = new Thread((mThread = new IdentifyThread(this)));
+		thread.start();
 
 		/**
 		 * 测度代码;
@@ -187,13 +190,17 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		list = new ArrayList<ChatEng>();
 		cad = new ChatAdapter(MainActivity.this, list);
 		chatList = (ListView) findViewById(R.id.chatlist);
-		ImageButton ib = (ImageButton) findViewById(R.id.helper_voice);
+		ib = (ImageButton) findViewById(R.id.helper_voice);
 
 		/**
 		 * 语义解析时的progressBar显示和文字说明
 		 */
 		pd = (ProgressBar)findViewById(R.id.progressBar1);
 		tv = (TextView)findViewById(R.id.textView1);
+		iv = (ImageView)findViewById(R.id.imageView1);
+		pd.setVisibility(View.INVISIBLE);
+		tv.setVisibility(View.INVISIBLE);
+		iv.setVisibility(View.INVISIBLE);
 		/**
 		 * 讯飞窗口初始化
 		 */
@@ -332,10 +339,15 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				if (!showProgressDiaglog) {
 					pd.setVisibility(View.VISIBLE);
 					tv.setVisibility(View.VISIBLE);
+					iv.setVisibility(View.VISIBLE);
+					iv.setAlpha(100);
+					ib.setClickable(false);
 					showProgressDiaglog = true;
 				} else {
 					pd.setVisibility(View.INVISIBLE);
 					tv.setVisibility(View.INVISIBLE);
+					iv.setVisibility(View.INVISIBLE);
+					ib.setClickable(true);
 					showProgressDiaglog = false;
 				}
 			}
