@@ -488,21 +488,38 @@ public class SemanticIdentify {
 		}
 	}
 
-	// 拼音得分函数，采用了比较拼音首字母的方法来比较得分
-	public static double strAppScore(String base, String var) {
-		String baseHead = CnToSpell.getPinYinHeadChar(base).toLowerCase();// base变量的拼音首字母
-		String varHead = CnToSpell.getPinYinHeadChar(var).toLowerCase();// var变量的拼音首字母
-		int denominator = varHead.length();// 得分的分母
-		int numerator = 0;// 得分的分子
+	// 拼音得分函数，采用了比较整个字符的拼音的方法来比较得分
+			public static double strAppScore(String base, String var) {
+				String basePY = CnToSpell.getPingYin(base).toLowerCase();// base变量的拼音
+				
+				int denominator = var.length();// 得分的分母
+				int numerator = 0;// 得分的分子
 
-		for (int i = 0; i < denominator; i++) {
-			if (baseHead.contains(varHead.substring(i, i + 1))) {
-				numerator++;
+				for (int i = 0; i < denominator; i++) {
+					if (basePY.contains(CnToSpell.getPingYin(var.substring(i,i+1).toLowerCase()))) {
+						numerator++;
+					}
+				}
+				double score = numerator * 1.0 / denominator;
+				return score;
 			}
+
+		// 拼音得分函数，采用了比较拼音首字母的方法来比较得分
+		public static double strAppScore_1(String base, String var) {
+			String baseHead = CnToSpell.getPinYinHeadChar(base).toLowerCase();// base变量的拼音首字母
+			String varHead = CnToSpell.getPinYinHeadChar(var).toLowerCase();// var变量的拼音首字母
+			int denominator = varHead.length();// 得分的分母
+			int numerator = 0;// 得分的分子
+
+			for (int i = 0; i < denominator; i++) {
+				if (baseHead.contains(varHead.substring(i, i + 1))) {
+					numerator++;
+				}
+			}
+			double score = numerator * 1.0 / denominator;
+			return score;
 		}
-		double score = numerator * 1.0 / denominator;
-		return score;
-	}
+
 
 	public static double strContactScore(String base, String var) {
 		int denominator = var.length();// 得分的分母
