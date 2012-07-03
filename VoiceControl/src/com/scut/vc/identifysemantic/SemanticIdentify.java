@@ -87,19 +87,16 @@ public class SemanticIdentify {
 			// 创建新的AppsManager实例
 			ArrayList<Package_Info> appsList = mAppManager
 					.getInstalledAppsList();
+			//创建识别出来的候选程序列表
+			ArrayList<String> resultsList = new ArrayList<String>();
 			int appsSize = appsList.size();
 			double maxScore = 0;
-			int flag = -1;// 标识哪个是需打开程序
 			System.out.println("strVoice= " + strVoice);
-			/*
-			 * 此处由于没有完善存在多个匹配项的情况，所以先假设存在一个情况
-			 */
-			//要比较长度，因为如果有两个应用均能完全匹配的话，选取较长的
-			//例如，strVoice = "uc浏览器", 那么"浏览器"跟"uc浏览器"均完全匹配，但是目的是UC浏览器，所以较长者优先
-			int length = 0; 
+			
 			for (int i = 0; i < appsSize; i++) {
 				Package_Info pi = appsList.get(i);
 				String strAppName = pi.mAppName;
+				String strPackageName = pi.mPackageName;
 				double score = strAppScore(strVoice, strAppName);
 				System.out.println("strVoice     ==     " + CnToSpell.getPingYin(strVoice) + "      strAppName     "+CnToSpell.getPingYin(strAppName));
 				System.out.println("1 = " + pi.mAppName);
@@ -107,23 +104,31 @@ public class SemanticIdentify {
 				System.out.println("score=" + score);
 				System.out.println("1 = " + pi.mAppName +"             length =  "+strAppName.length());
 				//分两种情况
-				//1、分数较高者，刷新flag
-				//2、分数一样是，存在长度较长者，刷新flag
-				if ( (score>maxScore) || (score>maxScore && strAppName.length()>length) ){
-					length = strAppName.length();
-					flag = i;
+				//1、与最高评分的应用评分一致，那么把该应用添加进候选程序列表
+				//2、评分比最高评分的应用高，那么清空原来的候选程序列表，同时吧该应用添加进列表
+				if ( (score >= maxScore-0.2) && (score <= maxScore+0.2) ){
+					resultsList.add(strPackageName);
 					maxScore = score;
 					System.out.println("maxScore=" + maxScore + "  = "
-							+ pi.mAppName + "  = " + pi.mPackageName);
+							+ pi.mAppName + "  = " + pi.mPackageName);					
+				}
+				if( score > maxScore+0.2 ){
+					//清空原来的候选程序列表
+					resultsList.clear();
+					resultsList.add(strPackageName);
+					maxScore = score;
+					System.out.println("maxScore=" + maxScore + "  = "
+							+ pi.mAppName + "  = " + pi.mPackageName);	
 				}
 			}
 			if (maxScore == 0) {
 				System.out.println("没有对应的命令！");
 				task = new Task(Task.IdentifyError, null);
-			} else {
-				System.out.println("打开应用" + ((Package_Info) appsList.get(flag)).mPackageName);
-				String packName = ((Package_Info) appsList.get(flag)).mPackageName;
-				task = new Task(Task.OpenApp, packName);
+			} else {				
+				for(int i=0;i<resultsList.size();i++){
+					System.out.println("打开应用" + resultsList.get(i));
+				}
+				task = new Task(Task.IdentifyError,null);
 			}
 
 			break;
