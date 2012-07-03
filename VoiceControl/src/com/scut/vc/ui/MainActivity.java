@@ -304,7 +304,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				alarm.Execute();
 			}
 				break;
-			case Task.Weather: {
+			case Task.Weather: {   
 				HashMap weatherInfos = (HashMap)task.getTaskParam();
 				String city = (String) weatherInfos.get("city");
 				int day = (Integer) weatherInfos.get("day");
