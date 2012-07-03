@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -37,6 +38,7 @@ import com.iflytek.speech.SpeechError;
 import com.iflytek.speech.SynthesizerPlayer;
 import com.iflytek.ui.RecognizerDialog;
 import com.iflytek.ui.RecognizerDialogListener;
+import com.scut.vc.alarm.AlarmService;
 import com.scut.vc.identifysemantic.IdentifyThread;
 import com.scut.vc.identifysemantic.SemanticIdentify;
 import com.scut.vc.utility.Alarm;
@@ -542,5 +544,15 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public DeviceControl getDevice() {
 		return mDevCon;
 	}
-
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			MainActivity.this.finish();
+			Intent i = new Intent(MainActivity.this,AlarmService.class);
+			stopService(i);
+			
+			Log.v("Work", "MainActivity End");
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

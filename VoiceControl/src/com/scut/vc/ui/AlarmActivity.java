@@ -11,6 +11,7 @@ import com.scut.vc.alarm.Str2DateTime;
 import com.scut.vc.alarm.Str2DateTimeUtil;
 import com.scut.vc.ui.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -85,6 +86,14 @@ public class AlarmActivity extends Activity{
 		alarmListView.setAdapter(new MyAlarmAdapter(AlarmActivity.this, states,tempTimes,tempDate,ids));
 	}
 
+	@SuppressLint("ParserError")
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			AlarmActivity.this.finish();
+			Log.v("Work", "AlActivity End");
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 }
 

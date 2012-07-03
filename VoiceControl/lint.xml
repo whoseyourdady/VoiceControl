@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="ParserError">
+        <ignore path="src\com\scut\vc\alarm\Str2DateTime.java" />
+    </issue>
 </lint>

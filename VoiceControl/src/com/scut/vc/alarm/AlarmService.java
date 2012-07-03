@@ -40,7 +40,7 @@ public class AlarmService extends Service{
 		super.onCreate();
 		as = this;
 		Log.v("Work", "----1----" + counter);
-		if(counter ==0){
+		if(counter == 0){
 			reCountTime();	
 			counter = 1;
 			Log.v("Work", "----2----" + counter);
@@ -71,8 +71,10 @@ public class AlarmService extends Service{
 					(this, alarmId, it, 0);
 					am.set(AlarmManager.RTC_WAKEUP, 
 							times, pit);
+					
+					Log.v("Work", "Service Wrong!!!!!!!");
 				}else{
-					Toast.makeText(AlarmService.this, "出错了！", Toast.LENGTH_SHORT);
+					//Toast.makeText(AlarmService.this, "出错了！", Toast.LENGTH_SHORT);
 				}
 			}
 		}	
@@ -85,9 +87,9 @@ public class AlarmService extends Service{
 	 */
 	public void onStart(Intent intent, int startId)
 	{
-		super.onStart(intent, startId);
-		
-		
+		super.onStart(intent, startId);		
+		Log.v("Work", "Service start!!!");
+		Log.v("Work", intent.getAction().equals("DELID")+"");
 //		
 		if(intent.getAction().equals("DELID")){
 			
@@ -104,15 +106,8 @@ public class AlarmService extends Service{
 			//获取AlarmManager
 			alarmTime = intent.getLongExtra("Time",0);
 			idOfAlarm = intent.getStringExtra("ID");
-		   
-		  //  
-			//如果获取的闹铃id为空时，则设定为0；
-//			if(idOfAlarm.equals("")){
-//				Log.v("Work", "ID  111");
-//				idOfAlarm ="0";
-//			}
 			Log.e("Work", "ID "+ idOfAlarm +" Time "+  alarmTime);
-			Log.v("Work", "----2----" + counter);
+			Log.v("Work", "----2fuck----" + counter);
 			if(counter > 1){
 				AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);		
 				Intent it = new Intent(AlarmService.this,CallAlarm.class);
@@ -120,10 +115,13 @@ public class AlarmService extends Service{
 				(this, Integer.parseInt(idOfAlarm), it, 0);
 				am.set(AlarmManager.RTC_WAKEUP, 
 						alarmTime, pit);
-				Toast.makeText(this, "AlarmSet Finish!", Toast.LENGTH_SHORT).show();		
+				Log.d("Work", "Alarm "+ idOfAlarm +" Start!!");
+				//Toast.makeText(this, "AlarmSet Finish!", Toast.LENGTH_SHORT).show();		
 			}
 			counter++;
 			Log.v("Work", "----3----" + counter);
+		}else{
+			Log.v("Work", "Service Wrong!");
 		}
 		 
 		
@@ -139,6 +137,7 @@ public class AlarmService extends Service{
 		super.onDestroy();
 		AlarmManager am = (AlarmManager)getSystemService
 		(Service.ALARM_SERVICE);
+		Log.v("Work", "Service End");
 
 	}
 
