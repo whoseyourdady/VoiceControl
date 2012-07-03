@@ -110,7 +110,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
 		//Test(task);
 		//mDevCon.Release();
-		//voiceString = "下午五点闹钟";
+		voiceString = "打开uc浏览器";
 
 
 	}
