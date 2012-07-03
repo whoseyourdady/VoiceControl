@@ -153,7 +153,7 @@ public class DeviceControl {
 	 */
 	private void EnableTorch(boolean enable) {
 		if (enable) {
-			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
 			mCamera.setParameters(parameter);
 		} else {
 			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
