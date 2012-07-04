@@ -103,6 +103,31 @@ OnClickListener {
 		 * 测度代码;
 		 */
 		updateListView(R.layout.chat_helper, "有什么可以帮到您？");
+		
+		//自启动识别
+		SharedPreferences sharedata_start = getSharedPreferences(
+				"startTurn", MODE_WORLD_READABLE);
+		boolean startTurn = sharedata_start.getBoolean("startTurn", false);// 如果不能正确获取自启动识别的选项，则以“0”为默认值，表示不自启动识别
+		System.out.println("startTurn = " + startTurn);
+
+		if(startTurn){
+			SharedPreferences sharedata1 = getSharedPreferences(
+					"voiceEngine", MODE_WORLD_READABLE);
+			String voiceEngine = sharedata1.getString("voiceEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
+			System.out.println("voiceEngine = " + voiceEngine);
+
+			// 由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
+			if (voiceEngine.equals("1")) {// EnableXunfeiVoice
+				showIatDialog();
+				// voiceString = "23点开会";
+				// updateListView(R.layout.chat_user, voiceString);
+			} else if (voiceEngine.equals("2")) {// EnableGoogleVoice
+				startVoiceRecognitionActivity();
+				// voiceString = "23点半开会";
+				// updateListView(R.layout.chat_user, voiceString);
+			}
+		}
+		
 
 		ArrayList<Contact.ContactPerson> callTarget = new ArrayList<Contact.ContactPerson>();// 打电话列表
 		Contact.ContactPerson contactPerson1 = mContact.new ContactPerson(
