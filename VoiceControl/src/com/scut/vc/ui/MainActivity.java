@@ -1,7 +1,13 @@
 package com.scut.vc.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -22,15 +29,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.iflytek.a.a;
 import com.iflytek.speech.RecognizerResult;
 import com.iflytek.speech.SpeechConfig.RATE;
 import com.iflytek.speech.SpeechError;
 import com.iflytek.speech.SynthesizerPlayer;
 import com.iflytek.ui.RecognizerDialog;
 import com.iflytek.ui.RecognizerDialogListener;
+import com.scut.vc.alarm.AlarmService;
 import com.scut.vc.identifysemantic.IdentifyThread;
 import com.scut.vc.identifysemantic.SemanticIdentify;
 import com.scut.vc.utility.Alarm;
@@ -38,13 +50,14 @@ import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.Contact;
 import com.scut.vc.utility.DeviceControl;
 import com.scut.vc.utility.Task;
+import com.scut.vc.utility.Weather;
 import com.scut.vc.utility.WebSearch;
 import com.scut.vc.utility.Contact.ContactPerson;
 import com.scut.vc.xflib.ChatAdapter;
 import com.scut.vc.xflib.ChatEng;
 
 public class MainActivity extends Activity implements RecognizerDialogListener,
-		OnClickListener {
+OnClickListener {
 	/** Called when the activity is first created. */
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
@@ -53,6 +66,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private DeviceControl mDevCon;
 	private WebSearch mWebSearch;
 	private SemanticIdentify mIdentify;
+	private Weather mWeather;
 
 	private ArrayList<ChatEng> list;
 	private ChatAdapter cad;
@@ -63,7 +77,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private String infos = null;
 	public static String voiceString = "";// 语音服务提供商返回的处理字符串
 	public static String voiceTempString = ""; // 讯飞语音返回临时存放的字符串
-	public ProgressDialog pd;// 识别中进度条
+
+	public ProgressBar pd;// 识别中进度条
+
+	public TextView tv; //识别中的文字说明
+	public ImageView iv; //识别中的背景
+	private ImageButton ib; //识别按钮
+
 	private boolean showProgressDiaglog = false;
 	public static boolean EnableGoogleVoice = false;// 使用google API
 	public static boolean EnableXunfeiVoice = true;// 使用讯飞 API
@@ -74,6 +94,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
 		inital();
 		Thread thread = new Thread((mThread = new IdentifyThread(this)));
 		thread.start();
@@ -96,13 +117,23 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		// Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		DeviceControl.Device device = mDevCon.new Device("flash", false);
-		Task task = new Task(Task.SwitchOnDevice, device);
 
-		//Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
-		//Test(task);
-		//mDevCon.Release();
-		voiceString = "打开水蛋";
+		// DeviceControl.Device device = mDevCon.new Device("flash", false);
+		// Task task = new Task(Task.SwitchOnDevice, device);
+
+		// Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
+		// Test(task);
+		// mDevCon.Release();
+		ArrayList<AppsManager.Package_Info> appList = new ArrayList<AppsManager.Package_Info>();
+		AppsManager.Package_Info info1 = mAppManager.new Package_Info("相机",
+				"com.miui.camera");
+		AppsManager.Package_Info info2 = mAppManager.new Package_Info("天天动听",
+				"com.sds.android.ttpod");
+		// voiceString = "打开相机";
+		appList.add(info1);
+		appList.add(info2);
+		Task task = new Task(Task.OpenApp, appList);
+		Test(task);
 
 
 	}
@@ -135,27 +166,30 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		switch (item.getItemId()) {
 		case Menu.FIRST + 1:
 			Toast.makeText(this, "打开设置界面", Toast.LENGTH_SHORT).show();
-			Intent intent2 = new Intent();
-			intent2.setClass(this, SettingActivity.class);
-			startActivity(intent2);
-			break;
+		Intent intent2 = new Intent();
+		intent2.setClass(this, SettingActivity.class);
+		startActivity(intent2);
+		break;
 		case Menu.FIRST + 2:
 			Toast.makeText(this, "打开帮助界面", Toast.LENGTH_SHORT).show();
-			Intent intent1 = new Intent();
-			intent1.setClass(this, HelpActivity.class);
-			startActivity(intent1);
-			break;
+		Intent intent1 = new Intent();
+		intent1.setClass(this, HelpActivity.class);
+		startActivity(intent1);
+		break;
 
 		case Menu.FIRST + 3:
 			Toast.makeText(this, "打开闹钟列表", Toast.LENGTH_SHORT).show();
-			Intent intent3 = new Intent();
-			intent3.setClass(this, AlarmActivity.class);
-			startActivity(intent3);
-			break;
+		Intent intent3 = new Intent();
+		intent3.setClass(this, AlarmActivity.class);
+		startActivity(intent3);
+		break;
 		case Menu.FIRST + 4:
 			Toast.makeText(this, "退出应用程序", Toast.LENGTH_SHORT).show();
-			android.os.Process.killProcess(android.os.Process.myPid());
-			break;
+		Intent i = new Intent(MainActivity.this,AlarmService.class);
+		stopService(i);
+		android.os.Process.killProcess(android.os.Process.myPid());
+
+		break;
 		}
 		return false;
 	}
@@ -176,13 +210,18 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		list = new ArrayList<ChatEng>();
 		cad = new ChatAdapter(MainActivity.this, list);
 		chatList = (ListView) findViewById(R.id.chatlist);
-		ImageButton ib = (ImageButton) findViewById(R.id.helper_voice);
+		ib = (ImageButton) findViewById(R.id.helper_voice);
 
 		/**
-		 * 语义解析时的progressBar显示
+		 * 语义解析时的progressBar显示和文字说明
 		 */
-		pd = new ProgressDialog(this);
-		pd.setMessage("正在解析...");
+
+		pd = (ProgressBar)findViewById(R.id.progressBar1);
+		tv = (TextView)findViewById(R.id.textView1);
+		iv = (ImageView)findViewById(R.id.imageView1);
+		pd.setVisibility(View.INVISIBLE);
+		tv.setVisibility(View.INVISIBLE);
+		iv.setVisibility(View.INVISIBLE);
 
 		/**
 		 * 讯飞窗口初始化
@@ -216,16 +255,15 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				String voiceEngine = sharedata1.getString("voiceEngine", "1");// 如果不能正确获取语义引擎选项的数据，则以第一项为值
 				System.out.println("voiceEngine = " + voiceEngine);
 
-
-				//由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
+				// 由于不是所有人的手机都有谷歌自带的语音库，所以这里默认以科大讯飞启动
 				if (voiceEngine.equals("1")) {// EnableXunfeiVoice
 					showIatDialog();
-//					voiceString = "23点开会";
-//					updateListView(R.layout.chat_user, voiceString);
+					// voiceString = "23点开会";
+					// updateListView(R.layout.chat_user, voiceString);
 				} else if (voiceEngine.equals("2")) {// EnableGoogleVoice
 					startVoiceRecognitionActivity();
-//					voiceString = "23点半开会";
-//					updateListView(R.layout.chat_user, voiceString);
+					// voiceString = "23点半开会";
+					// updateListView(R.layout.chat_user, voiceString);
 
 				}
 			}
@@ -248,64 +286,114 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			case Task.CALL: {
 				@SuppressWarnings("unchecked")
 				ArrayList<Contact.ContactPerson> callList = (ArrayList<Contact.ContactPerson>) task
-						.getTaskParam();
+				.getTaskParam();
 				if (0 == callList.size()) {
 					mAppManager.Execute("com.android.contacts");
 				} else if (1 == callList.size()) {
 					String phoneNum = callList.get(0).GetNumber();
 					mContact.CallPerson(phoneNum);
 				} else if (1 < callList.size()) {
-					ShowSelectDialog(callList, task);
+					ShowContactSelectDialog(callList, task);
 				}
 			}
-				break;
+			break;
 			case Task.SendMessage: {
 
 				@SuppressWarnings("unchecked")
 				ArrayList<Contact.ContactPerson> msgList = (ArrayList<Contact.ContactPerson>) task
-						.getTaskParam();
+				.getTaskParam();
 				if (0 == msgList.size()) {
 					// mAppManager.Execute("com.android.contacts");
 				} else if (1 == msgList.size()) {
 					String phoneNum = msgList.get(0).GetNumber();
 					mContact.SendMsg(phoneNum, "");
 				} else if (1 < msgList.size()) {
-					ShowSelectDialog(msgList, task);
+					ShowContactSelectDialog(msgList, task);
 				}
 			}
-				break;
+			break;
 			case Task.OpenApp: {
-				String packname = (String) task.getTaskParam();
-				mAppManager.Execute(packname);
+
+				ArrayList<AppsManager.Package_Info> appList = (ArrayList<AppsManager.Package_Info>) task
+						.getTaskParam();
+				if (0 == appList.size()) {
+
+				} else if (1 == appList.size()) {
+					String packname = ((AppsManager.Package_Info) appList
+							.get(0)).GetPackageName();
+					String appName = ((AppsManager.Package_Info) appList.get(0))
+							.GetAppName();
+					if (appName.contains("相机") || appName.contains("Camera")
+							|| appName.contains("camera")) {
+						mDevCon.Release();
+					}
+					mAppManager.Execute(packname);
+				} else if (1 < appList.size()) {
+					ShowAppSelectDialog(appList, task);
+				}
+
 			}
-				break;
+			break;
 			case Task.Search: {
 				String search = (String) task.getTaskParam();
 				mWebSearch.Execute(search);
 			}
-				break;
+			break;
 			case Task.SwitchOnDevice: {
 				DeviceControl.Device device = (DeviceControl.Device) task
 						.getTaskParam();
 				mDevCon.Execute(device);
 			}
-				break;
+			break;
 			case Task.SetAlarm: {
 				String strvoice = (String) task.getTaskParam();
 				Alarm alarm = new Alarm(MainActivity.this, strvoice);
 				alarm.Execute();
 			}
-				break;
+			break;
+			case Task.Weather: {
+				HashMap weatherInfos = (HashMap) task.getTaskParam();
+				String city = (String) weatherInfos.get("city");
+				int day = (Integer) weatherInfos.get("day");
+				System.out.println(city + ":" + day);
+				mWeather = new Weather(city, day, MainActivity.this);
+				String weatherInfo;
+				try {
+					weatherInfo = mWeather.execute();
+					updateListView(R.layout.chat_helper, weatherInfo);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			break;
 			case Task.ShowProcess: {
 				if (!showProgressDiaglog) {
-					pd.show();
+					pd.setVisibility(View.VISIBLE);
+					tv.setVisibility(View.VISIBLE);
+
+					iv.setVisibility(View.VISIBLE);
+					iv.setAlpha(100);
+					ib.setClickable(false);
+
 					showProgressDiaglog = true;
 				} else {
-					pd.cancel();
+					pd.setVisibility(View.INVISIBLE);
+					tv.setVisibility(View.INVISIBLE);
+
+					iv.setVisibility(View.INVISIBLE);
+					ib.setClickable(true);
+
 					showProgressDiaglog = false;
 				}
 			}
-				break;
+			break;
 			case Task.IdentifyError: {
 
 				// speakString("对不起哦，找不到你的命令");
@@ -411,7 +499,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
 		voiceString = voiceTempString;
-		updateListView(R.layout.chat_user, voiceString);
+		updateListView(R.layout.chat_user, voiceTempString);
 		voiceTempString = "";
 
 	}
@@ -448,13 +536,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	}
 
 	/**
-	 * 对列表框的重用
+	 * 联系人对列表框的重用
 	 * 
 	 * @param items
 	 * @param task
 	 */
-	public void ShowSelectDialog(final ArrayList<Contact.ContactPerson> list,
-			final Task task) {
+	public void ShowContactSelectDialog(
+			final ArrayList<Contact.ContactPerson> list, final Task task) {
 		final String[] items = new String[list.size()];
 		for (int n = 0; n < list.size(); n++) {
 			items[n] = ((Contact.ContactPerson) list.get(n)).GetName();
@@ -463,20 +551,67 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		builder.setTitle("请选择").setItems(items,
 				new android.content.DialogInterface.OnClickListener() {
 
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson>();
-						_list.add(list.get(which));
-						Task _task = new Task(task.getTaskID(), _list);
-						Message msg = new Message();
-						msg.obj = _task;
-						mhandler.sendMessage(msg);
-					}
-				});
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson>();
+				_list.add(list.get(which));
+				Task _task = new Task(task.getTaskID(), _list);
+				Message msg = new Message();
+				msg.obj = _task;
+				mhandler.sendMessage(msg);
+			}
+		});
 
 		AlertDialog dialog = builder.create();
 		dialog.show();
 
+	}
+
+	/**
+	 * 应用程序对列表框的重用
+	 * 
+	 * @param items
+	 * @param task
+	 */
+	public void ShowAppSelectDialog(
+			final ArrayList<AppsManager.Package_Info> list, final Task task) {
+		final String[] items = new String[list.size()];
+		for (int n = 0; n < list.size(); n++) {
+			items[n] = ((AppsManager.Package_Info) list.get(n)).GetAppName();
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("请选择").setItems(items,
+				new android.content.DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				ArrayList<AppsManager.Package_Info> _list = new ArrayList<AppsManager.Package_Info>();
+				_list.add(list.get(which));
+				Task _task = new Task(task.getTaskID(), _list);
+				Message msg = new Message();
+				msg.obj = _task;
+				mhandler.sendMessage(msg);
+			}
+		});
+
+		AlertDialog dialog = builder.create();
+		dialog.show();
+
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		mDevCon.initialTorch();
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		DeviceControl.Device device = mDevCon.new Device("flash", false);
+		mDevCon.Execute(device);
+		super.onStop();
 	}
 
 	/**
@@ -513,4 +648,14 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		return mDevCon;
 	}
 
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			MainActivity.this.finish();
+			Intent i = new Intent(MainActivity.this,AlarmService.class);
+			stopService(i);
+
+			Log.v("Work", "MainActivity End");
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

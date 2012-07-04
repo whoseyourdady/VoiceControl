@@ -23,6 +23,7 @@ public class HelpActivity extends ExpandableListActivity   {
         Map<String, String> title_4 = new HashMap<String, String>(); 
         Map<String, String> title_5 = new HashMap<String, String>(); 
         Map<String, String> title_6 = new HashMap<String, String>(); 
+        Map<String, String> title_7 = new HashMap<String, String>(); 
           
         title_1.put("group", "拨打电话");  
         title_2.put("group", "发送短信"); 
@@ -30,6 +31,7 @@ public class HelpActivity extends ExpandableListActivity   {
         title_4.put("group", "网络搜索");
         title_5.put("group", "设置提醒");
         title_6.put("group", "设置系统");
+        title_7.put("group", "查询天气");
           
         //创建一级条目容器   
         List<Map<String, String>> gruops = new ArrayList<Map<String,String>>();  
@@ -40,6 +42,7 @@ public class HelpActivity extends ExpandableListActivity   {
         gruops.add(title_4);  
         gruops.add(title_5);  
         gruops.add(title_6);  
+        gruops.add(title_7);  
           
         //创建二级条目内容   
           
@@ -155,7 +158,28 @@ public class HelpActivity extends ExpandableListActivity   {
         childs_6.add(content_66);
         childs_6.add(content_67);
         
-        //存放两个内容, 以便显示在列表中   
+        //内容五   
+        Map<String, String> content_71 = new HashMap<String, String>();  
+        Map<String, String> content_72 = new HashMap<String, String>();  
+        Map<String, String> content_73 = new HashMap<String, String>(); 
+        Map<String, String> content_74 = new HashMap<String, String>(); 
+        Map<String, String> content_75 = new HashMap<String, String>(); 
+          
+        content_71.put("child", "命令示例：");  
+        content_72.put("child", "现在的天气怎么样");  
+        content_73.put("child", "明天的天气怎么样");  
+        content_74.put("child", "北京现在的天气怎么样"); 
+        content_75.put("child", "北京明天的天气怎么样"); 
+          
+        List<Map<String, String>> childs_7 = new ArrayList<Map<String,String>>();  
+        childs_7.add(content_71);  
+        childs_7.add(content_72);  
+        childs_7.add(content_73);
+        childs_7.add(content_74);
+        childs_7.add(content_75);
+        
+        
+        //存放内容, 以便显示在列表中   
         List<List<Map<String, String>>> childs = new ArrayList<List<Map<String,String>>>();  
         childs.add(childs_1);  
         childs.add(childs_2);
@@ -163,6 +187,7 @@ public class HelpActivity extends ExpandableListActivity   {
         childs.add(childs_4); 
         childs.add(childs_5); 
         childs.add(childs_6); 
+        childs.add(childs_7); 
         //创建ExpandableList的Adapter容器   
         //参数: 1.上下文    2.一级集合   3.一级样式文件 4. 一级条目键值      5.一级显示控件名   
         //      6. 二级集合 7. 二级样式 8.二级条目键值    9.二级显示控件名   

@@ -19,10 +19,9 @@ public class AlarmService extends Service{
 	 */
 	private static AlarmService as = null;
 	private DatabaseHelper mydb;                //数据库
-	private String idOfAlarm ="";                     //闹铃的
+	private String idOfAlarm ="";                     //闹铃的id
 	private long alarmTime = 0;                    //该闹铃设定的时间与当前系统时间的差值
-	private int counter = 0;                      //避免在开机启动时误启动onstart（）里面的操作
-	private String delId = "";
+	private String delId = "";                 //删除的闹铃ID
 
 	/*
 	 * 设置一个静态方法保留Service实体，方便其他地方可以获取.
@@ -39,12 +38,7 @@ public class AlarmService extends Service{
 	{
 		super.onCreate();
 		as = this;
-		Log.v("Work", "----1----" + counter);
-		if(counter ==0){
-			reCountTime();	
-			counter = 1;
-			Log.v("Work", "----2----" + counter);
-		}
+		reCountTime();	
 	}
 
 	/*
@@ -64,15 +58,17 @@ public class AlarmService extends Service{
 				//String states = cursor.getString(1);
 				long times = cursor.getLong(4);
 				AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
+				//只有当设定的时间大于当前系统的时间时，才会发出广播
 				if(times > cl.getTimeInMillis()){
 					Intent it = new Intent(this,CallAlarm.class);
 					it.putExtra("ID", alarmId);
 					PendingIntent pit = PendingIntent.getBroadcast
-					(this, alarmId, it, 0);
+							(this, alarmId, it, 0);
 					am.set(AlarmManager.RTC_WAKEUP, 
-							times, pit);
+							times, pit);					
+					Log.v("Work", "Alarm id "+ alarmId +" times " + times);
 				}else{
-					Toast.makeText(AlarmService.this, "出错了！", Toast.LENGTH_SHORT);
+					//Toast.makeText(AlarmService.this, "出错了！", Toast.LENGTH_SHORT);
 				}
 			}
 		}	
@@ -85,48 +81,38 @@ public class AlarmService extends Service{
 	 */
 	public void onStart(Intent intent, int startId)
 	{
-		super.onStart(intent, startId);
-		
-		
-//		
+		super.onStart(intent, startId);		
+		Log.v("Work", "Service start!!!");
+		Log.v("Work", intent.getAction().equals("DELID")+"");
+		//		
 		if(intent.getAction().equals("DELID")){
-			
+
 			delId = intent.getStringExtra("DELID"); 
 			Log.e("Work", "  ---delID---- " + delId);
 			AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
 			Intent it = new Intent(AlarmService.this,CallAlarm.class);
 			//it.putExtra(DatabaseHelper.ALARM_ID, delId);
 			PendingIntent pi = PendingIntent.getBroadcast
-			(this, Integer.parseInt(delId), it, 0);
+					(this, Integer.parseInt(delId), it, 0);
 			am.cancel(pi);
 		}else if(intent.getAction().equals("SETTING")){
 			Log.e("Work", "Wrong!!!!");
 			//获取AlarmManager
 			alarmTime = intent.getLongExtra("Time",0);
 			idOfAlarm = intent.getStringExtra("ID");
-		   
-		  //  
-			//如果获取的闹铃id为空时，则设定为0；
-//			if(idOfAlarm.equals("")){
-//				Log.v("Work", "ID  111");
-//				idOfAlarm ="0";
-//			}
 			Log.e("Work", "ID "+ idOfAlarm +" Time "+  alarmTime);
-			Log.v("Work", "----2----" + counter);
-			if(counter > 1){
-				AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);		
-				Intent it = new Intent(AlarmService.this,CallAlarm.class);
-				PendingIntent pit = PendingIntent.getBroadcast
-				(this, Integer.parseInt(idOfAlarm), it, 0);
-				am.set(AlarmManager.RTC_WAKEUP, 
-						alarmTime, pit);
-				Toast.makeText(this, "AlarmSet Finish!", Toast.LENGTH_SHORT).show();		
-			}
-			counter++;
-			Log.v("Work", "----3----" + counter);
+			AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);		
+			Intent it = new Intent(AlarmService.this,CallAlarm.class);
+			PendingIntent pit = PendingIntent.getBroadcast
+					(this, Integer.parseInt(idOfAlarm), it, 0);
+			am.set(AlarmManager.RTC_WAKEUP, 
+					alarmTime, pit);
+			Log.d("Work", "Alarm "+ idOfAlarm +" Start!!");
+		}else{
+			Log.v("Work", "Service Wrong!");
 		}
-		 
-		
+
+
 
 	}
 	/*
@@ -138,7 +124,8 @@ public class AlarmService extends Service{
 	{
 		super.onDestroy();
 		AlarmManager am = (AlarmManager)getSystemService
-		(Service.ALARM_SERVICE);
+				(Service.ALARM_SERVICE);
+		Log.v("Work", "Service End");
 
 	}
 
