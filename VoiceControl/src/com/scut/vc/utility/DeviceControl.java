@@ -72,9 +72,10 @@ public class DeviceControl {
 	 */
 	public void initialTorch() {
 		
-		// mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
+		//mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
 		if (mCamera == null) {
-			mCamera = Camera.open();
+			//mCamera = Camera.open();
+			mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
 			parameter = mCamera.getParameters();
 		} else {
 			try {
