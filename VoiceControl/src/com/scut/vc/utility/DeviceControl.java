@@ -67,31 +67,46 @@ public class DeviceControl {
 	}
 
 	/**
-	 * 手电筒初始化
-	 * 电筒不在这里初始化了
+	 * 手电筒初始化 电筒不在这里初始化了
 	 */
-	public void initialTorch() {
-		
-		// mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
-		if (mCamera == null) {
-			mCamera = Camera.open();
-			parameter = mCamera.getParameters();
-		} else {
-			try {
-				mCamera.reconnect();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-	}
-	
-	private void initial() {
-		
 
-		initialTorch();
-		
+	private void OpenLightOn() {
+		if (null == mCamera) {
+			mCamera = Camera.open();
+		}
+		// m_Camera.takePicture(null, null, null, null);
+
+		Camera.Parameters parameters = mCamera.getParameters();
+		System.out.println(parameters.getFlashMode());
+		parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+		System.out.println(parameters.getFlashMode());
+		mCamera.setParameters(parameters);
+		mCamera.autoFocus(new Camera.AutoFocusCallback() {
+			public void onAutoFocus(boolean success, Camera camera) {
+
+			}
+		});
+		mCamera.startPreview();
+	}
+
+	private void CloseLightOff() {
+		if (mCamera != null) {
+			Camera.Parameters parameters = mCamera.getParameters();
+			System.out.println(parameters.getFlashMode());
+			parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+			System.out.println(parameters.getFlashMode());
+			mCamera.setParameters(parameters);
+
+			mCamera.stopPreview();
+			mCamera.release();
+			mCamera = null;
+		}
+	}
+
+	private void initial() {
+
+		// initialTorch();
+
 		/**
 		 * GPS
 		 */
@@ -172,7 +187,6 @@ public class DeviceControl {
 	 */
 	private void EnableTorch(boolean enable) {
 		if (enable) {
-
 
 			parameter.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
 
@@ -275,8 +289,9 @@ public class DeviceControl {
 	}
 
 	public void Release() {
-		mCamera.release();
-		mCamera = null;
+		if (mCamera != null) {
+			CloseLightOff();
+		}
 	}
 
 	public void Execute(Device device) {
@@ -300,19 +315,17 @@ public class DeviceControl {
 			if (!hasFlashMode()) {
 				return;
 			}
-			if (!(parameter.getFlashMode().equals(
-					Camera.Parameters.FLASH_MODE_ON)
-					
-					^ device.flag)) {
+			if (!((null != mCamera)
+
+			^ device.flag)) {
 
 				return;
 			}
-			if (parameter.getFlashMode().equals(
-					Camera.Parameters.FLASH_MODE_ON)) {
-				EnableTorch(false);
-				
+			if ((null != mCamera)) {
+				CloseLightOff();
+
 			} else {
-				EnableTorch(true);
+				OpenLightOn();
 			}
 		}
 			break;
