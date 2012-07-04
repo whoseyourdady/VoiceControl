@@ -65,23 +65,23 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 	private Contact mContact;
 	private DeviceControl mDevCon;
 	private WebSearch mWebSearch;
-	private SemanticIdentify mIdentify;
+
 	private Weather mWeather;
 
 	private ArrayList<ChatEng> list;
 	private ChatAdapter cad;
 	private ListView chatList;
 
-	private SharedPreferences mSharedPreferences;
 	private RecognizerDialog iatDialog;
-	private String infos = null;
+	private String infos;
+
 	public static String voiceString = "";// 语音服务提供商返回的处理字符串
 	public static String voiceTempString = ""; // 讯飞语音返回临时存放的字符串
 
 	public ProgressBar pd;// 识别中进度条
 
-	public TextView tv; // 识别中的文字说明
-	public ImageView iv; // 识别中的背景
+	// public TextView tv; //识别中的文字说明
+	// public ImageView iv; //识别中的背景
 	private ImageButton ib; // 识别按钮
 
 	private boolean showProgressDiaglog = false;
@@ -141,11 +141,12 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// Task task = new Task(Task.OpenApp, "com.ihandysoft.alarmclock");
 		// Task task = new Task(Task.Search, "com.android.soundrecorder");
 
-		 DeviceControl.Device device = mDevCon.new Device("flash", true);
-		 Task task = new Task(Task.SwitchOnDevice, device);
+		DeviceControl.Device device = mDevCon.new Device("flash", true);
+		Task task = new Task(Task.SwitchOnDevice, device);
 
 		// Task task = new Task(Task.SetAlarm, "大闹天宫闹钟");
-		 Test(task);
+		Test(task);
+
 		// mDevCon.Release();
 		ArrayList<AppsManager.Package_Info> appList = new ArrayList<AppsManager.Package_Info>();
 		AppsManager.Package_Info info1 = mAppManager.new Package_Info("相机",
@@ -155,7 +156,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// voiceString = "打开相机";
 		appList.add(info1);
 		appList.add(info2);
-		//Task task = new Task(Task.OpenApp, appList);
+
 		// Test(task);
 		// voiceString = "今天下午五点的闹钟";
 
@@ -228,7 +229,6 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		mContact = new Contact(this);
 		mDevCon = new DeviceControl(this);
 		mWebSearch = new WebSearch(this);
-		mIdentify = new SemanticIdentify(this);
 
 		list = new ArrayList<ChatEng>();
 		cad = new ChatAdapter(MainActivity.this, list);
@@ -239,12 +239,13 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		 * 语义解析时的progressBar显示和文字说明
 		 */
 
-		pd = (ProgressBar) findViewById(R.id.progressBar1);
-		tv = (TextView) findViewById(R.id.textView1);
-		iv = (ImageView) findViewById(R.id.imageView1);
+		pd = (ProgressBar) findViewById(R.id.progressBar2);
+		// tv = (TextView)findViewById(R.id.textView1);
+		// iv = (ImageView)findViewById(R.id.imageView1);
+
 		pd.setVisibility(View.INVISIBLE);
-		tv.setVisibility(View.INVISIBLE);
-		iv.setVisibility(View.INVISIBLE);
+		// tv.setVisibility(View.INVISIBLE);
+		// iv.setVisibility(View.INVISIBLE);
 
 		/**
 		 * 讯飞窗口初始化
@@ -310,14 +311,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				@SuppressWarnings("unchecked")
 				ArrayList<Contact.ContactPerson> callList = (ArrayList<Contact.ContactPerson>) task
 						.getTaskParam();
-				if (0 == callList.size()) {
-					mAppManager.Execute("com.android.contacts");
-				} else if (1 == callList.size()) {
-					String phoneNum = callList.get(0).GetNumber();
-					mContact.CallPerson(phoneNum);
-				} else if (1 < callList.size()) {
-					ShowContactSelectDialog(callList, task);
-				}
+				ShowContactSelectDialog(callList, task);
+
 			}
 				break;
 			case Task.SendMessage: {
@@ -325,14 +320,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 				@SuppressWarnings("unchecked")
 				ArrayList<Contact.ContactPerson> msgList = (ArrayList<Contact.ContactPerson>) task
 						.getTaskParam();
-				if (0 == msgList.size()) {
-					// mAppManager.Execute("com.android.contacts");
-				} else if (1 == msgList.size()) {
-					String phoneNum = msgList.get(0).GetNumber();
-					mContact.SendMsg(phoneNum, "");
-				} else if (1 < msgList.size()) {
-					ShowContactSelectDialog(msgList, task);
-				}
+
+				ShowContactSelectDialog(msgList, task);
+
 			}
 				break;
 			case Task.OpenApp: {
@@ -399,21 +389,21 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			case Task.ShowProcess: {
 				if (!showProgressDiaglog) {
 					pd.setVisibility(View.VISIBLE);
-					tv.setVisibility(View.VISIBLE);
+					// tv.setVisibility(View.VISIBLE);
 
-					iv.setVisibility(View.VISIBLE);
-					iv.setAlpha(100);
+					// iv.setVisibility(View.VISIBLE);
+					// iv.setAlpha(100);
 					ib.setClickable(false);
 
 					showProgressDiaglog = true;
 				} else {
-					pd.setVisibility(View.INVISIBLE);
-					tv.setVisibility(View.INVISIBLE);
+					// pd.setVisibility(View.INVISIBLE);
+					// tv.setVisibility(View.INVISIBLE);
 
-					iv.setVisibility(View.INVISIBLE);
+					// iv.setVisibility(View.INVISIBLE);
 					ib.setClickable(true);
-
 					showProgressDiaglog = false;
+					pd.setVisibility(View.INVISIBLE);
 				}
 			}
 				break;
@@ -421,7 +411,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 				// speakString("对不起哦，找不到你的命令");
 
-				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
+				updateListView(R.layout.chat_helper2, "对不起哦，找不到你的命令");
 
 			}
 			default: {
@@ -491,7 +481,7 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		// voiceString = "";
 		iatDialog.setEngine(engine, area, null);
 		iatDialog.setSampleRate(RATE.rate8k);
-		infos = null;
+
 		iatDialog.show();
 
 	}
@@ -521,8 +511,9 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
-		voiceString = voiceTempString;
-		updateListView(R.layout.chat_user, voiceTempString);
+		voiceString = voiceTempString
+				.substring(0, voiceTempString.length() - 1);
+		updateListView(R.layout.chat_user, voiceString);
 		voiceTempString = "";
 
 	}
@@ -576,12 +567,14 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						ArrayList<Contact.ContactPerson> _list = new ArrayList<Contact.ContactPerson>();
-						_list.add(list.get(which));
-						Task _task = new Task(task.getTaskID(), _list);
-						Message msg = new Message();
-						msg.obj = _task;
-						mhandler.sendMessage(msg);
+						String num = ((Contact.ContactPerson) list.get(which))
+								.GetNumber();
+						if (task.getTaskID() == Task.CALL) {
+							mContact.CallPerson(num);
+						} else if (task.getTaskID() == Task.SendMessage) {
+							mContact.SendMsg(num, "");
+						}
+
 					}
 				});
 
@@ -647,11 +640,11 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		mDevCon.Release();
 		mDevCon = null;
 		mWebSearch = null;
-		mIdentify = null;
+
 		list = null;
 		cad = null;
 		chatList = null;
-		mSharedPreferences = null;
+
 		iatDialog = null;
 		voiceString = "";// 语音服务提供商返回的处理字符串
 		pd = null;

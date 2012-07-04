@@ -69,22 +69,6 @@ public class DeviceControl {
 	/**
 	 * 手电筒初始化 电筒不在这里初始化了
 	 */
-	// public void initialTorch() {
-	//
-	// // mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
-	// if (mCamera == null) {
-	// mCamera = Camera.open();
-	// parameter = mCamera.getParameters();
-	// } else {
-	// try {
-	// mCamera.reconnect();
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// }
 
 	private void OpenLightOn() {
 		if (null == mCamera) {
@@ -99,6 +83,7 @@ public class DeviceControl {
 		mCamera.setParameters(parameters);
 		mCamera.autoFocus(new Camera.AutoFocusCallback() {
 			public void onAutoFocus(boolean success, Camera camera) {
+
 			}
 		});
 		mCamera.startPreview();

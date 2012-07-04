@@ -22,15 +22,28 @@
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" >
     </ListView>
-        <ImageButton 
-        android:id="@+id/helper_voice"
-        android:layout_width="wrap_content"
+     <FrameLayout android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
+        android:layout_gravity="center">
+    <ImageButton 
+        android:id="@+id/helper_voice"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center|bottom"
         android:background="@android:color/transparent"
         android:src="@drawable/voice_helper_sl" >
     </ImageButton>
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        style="@style/myProgressStyle"
+        android:layout_gravity="center" />
+
+    </FrameLayout>
     </LinearLayout>
+    <!--  
     <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
@@ -40,6 +53,7 @@
         <ProgressBar
         android:id="@+id/progressBar1"
         style="@style/myProgressStyle"
+        android:indeterminateDuration="10"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center" />
@@ -48,6 +62,6 @@
             android:layout_height="wrap_content" 
             android:text="正在解析...." 
             android:textColor="@android:color/black" 
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"/>-->
     </FrameLayout>
 </LinearLayout>

@@ -1,4 +1,8 @@
 <animated-rotate xmlns:android="http://schemas.android.com/apk/res/android"  
-    android:drawable="@drawable/load"  
+    android:drawable="@drawable/voice_load"  
     android:pivotX="50%"  
-    android:pivotY="50%"  /> 
+    android:pivotY="50%"  
+    android:fromDegrees="0.0"
+    android:toDegrees="720.0"
+    android:duration="10"
+    /> 

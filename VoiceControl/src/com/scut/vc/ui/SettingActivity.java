@@ -21,7 +21,7 @@ public class SettingActivity extends PreferenceActivity implements
 
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.setting);
-
+		this.getWindow().setBackgroundDrawableResource(R.drawable.mywb);
 		/*
 		 * // 读取数据，用于方便测试 final SharedPreferences sp = PreferenceManager
 		 * .getDefaultSharedPreferences(this);
