@@ -147,9 +147,13 @@ public class SemanticIdentify {
 		}
 		case CALL: {
 
+			System.out.println(strVoice+"jksdlfj");
+			System.out.println(strVoice.length());
 			// 当没有剩余的参数时，即没有任何可判断的数据时，默认打开联系人的程序
 			if (strVoice.length() == 0) {
-				task = new Task(Task.OpenApp, OPENCALL);
+				ArrayList<Package_Info> resultsList = new ArrayList<Package_Info>();
+				resultsList.add(mAppManager.new Package_Info("通讯录", OPENCALL));
+				task = new Task(Task.OpenApp, resultsList);
 				break;
 			}
 			ArrayList<Contact.ContactPerson> contactPersonList = mContact
@@ -271,10 +275,11 @@ public class SemanticIdentify {
 
 			// 当没有剩余的参数时，即没有任何可判断的数据时，默认打开短信的程序
 			if (strVoice.length() == 0) {
-				task = new Task(Task.OpenApp, OPENMMS);
+				ArrayList<Package_Info> resultsList = new ArrayList<Package_Info>();
+				resultsList.add(mAppManager.new Package_Info("短信", OPENMMS));
+				task = new Task(Task.OpenApp, resultsList);
 				break;
 			}
-
 			ArrayList<Contact.ContactPerson> contactPersonList = mContact
 					.GetPersonList();
 

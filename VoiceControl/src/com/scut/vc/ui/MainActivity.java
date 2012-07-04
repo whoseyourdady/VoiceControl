@@ -80,8 +80,8 @@ OnClickListener {
 
 	public ProgressBar pd;// 识别中进度条
 
-	public TextView tv; //识别中的文字说明
-	public ImageView iv; //识别中的背景
+	//public TextView tv; //识别中的文字说明
+	//public ImageView iv; //识别中的背景
 	private ImageButton ib; //识别按钮
 
 	private boolean showProgressDiaglog = false;
@@ -214,12 +214,12 @@ OnClickListener {
 		 * 语义解析时的progressBar显示和文字说明
 		 */
 
-		pd = (ProgressBar)findViewById(R.id.progressBar1);
-		tv = (TextView)findViewById(R.id.textView1);
-		iv = (ImageView)findViewById(R.id.imageView1);
+		pd = (ProgressBar)findViewById(R.id.progressBar2);
+		//tv = (TextView)findViewById(R.id.textView1);
+		//iv = (ImageView)findViewById(R.id.imageView1);
 		pd.setVisibility(View.INVISIBLE);
-		tv.setVisibility(View.INVISIBLE);
-		iv.setVisibility(View.INVISIBLE);
+		//tv.setVisibility(View.INVISIBLE);
+		//iv.setVisibility(View.INVISIBLE);
 
 		/**
 		 * 讯飞窗口初始化
@@ -374,29 +374,29 @@ OnClickListener {
 			case Task.ShowProcess: {
 				if (!showProgressDiaglog) {
 					pd.setVisibility(View.VISIBLE);
-					tv.setVisibility(View.VISIBLE);
+					//tv.setVisibility(View.VISIBLE);
 
-					iv.setVisibility(View.VISIBLE);
-					iv.setAlpha(100);
+					//iv.setVisibility(View.VISIBLE);
+					//iv.setAlpha(100);
 					ib.setClickable(false);
 
 					showProgressDiaglog = true;
 				} else {
-					pd.setVisibility(View.INVISIBLE);
-					tv.setVisibility(View.INVISIBLE);
+					//pd.setVisibility(View.INVISIBLE);
+					//tv.setVisibility(View.INVISIBLE);
 
-					iv.setVisibility(View.INVISIBLE);
+					//iv.setVisibility(View.INVISIBLE);
 					ib.setClickable(true);
-
 					showProgressDiaglog = false;
+					pd.setVisibility(View.INVISIBLE);
 				}
 			}
 			break;
 			case Task.IdentifyError: {
 
 				// speakString("对不起哦，找不到你的命令");
-
-				updateListView(R.layout.chat_helper, "对不起哦，找不到你的命令");
+                
+				updateListView(R.layout.chat_helper2, "对不起哦，找不到你的命令");
 
 			}
 			default: {
@@ -496,8 +496,8 @@ OnClickListener {
 
 	public void onEnd(SpeechError arg0) {
 		// TODO Auto-generated method stub
-		voiceString = voiceTempString;
-		updateListView(R.layout.chat_user, voiceTempString);
+		voiceString = voiceTempString.substring(0, voiceTempString.length()-1);
+		updateListView(R.layout.chat_user, voiceString);
 		voiceTempString = "";
 
 	}
