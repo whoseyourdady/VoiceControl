@@ -74,8 +74,8 @@ public class DeviceControl {
 		
 		//mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
 		if (mCamera == null) {
-			//mCamera = Camera.open();
-			mCamera = Camera.open(Camera.getNumberOfCameras() - 1);
+			mCamera = Camera.open();
+
 			parameter = mCamera.getParameters();
 		} else {
 			try {
