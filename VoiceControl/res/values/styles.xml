@@ -84,5 +84,19 @@
         <item name="android:textColor">#FFffffff</item>
         <item name="android:paddingLeft">10dp</item>
     </style>
+    
+    <style name="myProgressStyle"
+        parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@anim/loading</item>
+    </style>
+    
+    <style name="voiceHelper"
+        parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@anim/helper</item>
+    </style>
+    <style name="voiceHelper2"
+        parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@anim/helper2</item>
+    </style>
 
 </resources>

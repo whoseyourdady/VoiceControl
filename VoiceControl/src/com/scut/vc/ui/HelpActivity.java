@@ -15,6 +15,7 @@ public class HelpActivity extends ExpandableListActivity   {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help);
+        this.getWindow().setBackgroundDrawableResource(R.drawable.mywb);
         
         //创建二个一级条目标题   
         Map<String, String> title_1 = new HashMap<String, String>();  
