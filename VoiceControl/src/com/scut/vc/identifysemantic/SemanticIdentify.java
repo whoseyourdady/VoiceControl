@@ -140,7 +140,7 @@ public class SemanticIdentify {
 				for(int i=0;i<resultsList.size();i++){
 					System.out.println("打开应用       " + resultsList.get(i).GetAppName() + "             " + resultsList.get(i).GetPackageName());					
 				}
-				task = new Task(Task.IdentifyError,null);
+				task = new Task(Task.OpenApp, resultsList);
 			}
 
 			break;

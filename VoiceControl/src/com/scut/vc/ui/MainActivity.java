@@ -132,7 +132,8 @@ OnClickListener {
 		appList.add(info1);
 		appList.add(info2);
 		Task task = new Task(Task.OpenApp, appList);
-		Test(task);
+		//Test(task);
+		//voiceString = "今天下午五点的闹钟";
 
 	}
 
