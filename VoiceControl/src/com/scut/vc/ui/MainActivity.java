@@ -148,14 +148,18 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 		Test(task);
 
 		// mDevCon.Release();
-		ArrayList<AppsManager.Package_Info> appList = new ArrayList<AppsManager.Package_Info>();
-		AppsManager.Package_Info info1 = mAppManager.new Package_Info("相机",
-				"com.miui.camera");
-		AppsManager.Package_Info info2 = mAppManager.new Package_Info("天天动听",
-				"com.sds.android.ttpod");
-		// voiceString = "打开相机";
-		appList.add(info1);
-		appList.add(info2);
+//		ArrayList<AppsManager.Package_Info> appList = new ArrayList<AppsManager.Package_Info>();
+//		AppsManager.Package_Info info1 = mAppManager.new Package_Info("相机",
+//				"com.miui.camera");
+//		AppsManager.Package_Info info2 = mAppManager.new Package_Info("天天动听",
+//				"com.sds.android.ttpod");
+//		// voiceString = "打开相机";
+//		appList.add(info1);
+//		appList.add(info2);
+//		Task task = new Task(Task.OpenApp, appList);
+		//Test(task);
+		//voiceString = "今天下午五点的闹钟";
+
 
 		// Test(task);
 		// voiceString = "今天下午五点的闹钟";
