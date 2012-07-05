@@ -14,8 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/state"
         android:layout_below="@+id/deleteTime"
-        android:text="12:00"
-        android:textColor="#165be8"
+        android:textColor="#ffffff"
         android:textSize="15dip" >
     </TextView>
 
