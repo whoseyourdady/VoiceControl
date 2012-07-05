@@ -3,7 +3,7 @@ package com.scut.vc.ui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,13 +29,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
-import com.iflytek.a.a;
+
 import com.iflytek.speech.RecognizerResult;
 import com.iflytek.speech.SpeechConfig.RATE;
 import com.iflytek.speech.SpeechError;
@@ -44,7 +44,7 @@ import com.iflytek.ui.RecognizerDialog;
 import com.iflytek.ui.RecognizerDialogListener;
 import com.scut.vc.alarm.AlarmService;
 import com.scut.vc.identifysemantic.IdentifyThread;
-import com.scut.vc.identifysemantic.SemanticIdentify;
+
 import com.scut.vc.utility.Alarm;
 import com.scut.vc.utility.AppsManager;
 import com.scut.vc.utility.Contact;
