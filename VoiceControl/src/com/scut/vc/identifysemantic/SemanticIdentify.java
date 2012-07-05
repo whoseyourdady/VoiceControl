@@ -1,7 +1,12 @@
 package com.scut.vc.identifysemantic;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -446,6 +451,7 @@ public class SemanticIdentify {
 			int day;
 			GetLocation g = new GetLocation(this.mActivity);
 			City = g.getCity().replace("市", "");
+
 			if(strVoice.contains("今天")){
 				day = 0;
 			}else if(strVoice.contains("明天")){
@@ -466,10 +472,25 @@ public class SemanticIdentify {
 					}
 				}
 			}
-			HashMap weatherInfos = new HashMap();
-			weatherInfos.put("city", City);
-			weatherInfos.put("day", day);
-			task = new Task(Task.Weather, weatherInfos);
+			Weather mWeather = new Weather(City, day,this.mActivity);
+			String weatherInfo = null;
+			try {
+				if(City.length()!=0){
+					weatherInfo = mWeather.execute();
+				}else{
+					weatherInfo = "没有开启位置服务，示例：“广州现在什么天气”";
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			task = new Task(Task.Weather, weatherInfo);
 			System.out.println("天气查询");
 			break;
 		}
