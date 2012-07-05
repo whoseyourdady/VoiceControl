@@ -4,26 +4,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.scut.vc.alarm.AlarmService;
-import com.scut.vc.alarm.DatabaseHelper;
-import com.scut.vc.alarm.MyAlarmAdapter;
-import com.scut.vc.alarm.Str2DateTime;
-import com.scut.vc.alarm.Str2DateTimeUtil;
-import com.scut.vc.ui.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
+
+import com.scut.vc.alarm.DatabaseHelper;
+import com.scut.vc.alarm.MyAlarmAdapter;
 
 /**
  * 该Activity是对整个闹铃的设置的

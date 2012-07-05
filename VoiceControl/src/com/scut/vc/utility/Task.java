@@ -1,6 +1,5 @@
 package com.scut.vc.utility;
 
-import java.util.Map;
 
 /**
  * 当解析语义模块后

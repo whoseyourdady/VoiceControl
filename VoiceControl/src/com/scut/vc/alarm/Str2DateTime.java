@@ -1,6 +1,5 @@
 package com.scut.vc.alarm;
 
-import android.annotation.SuppressLint;
 import java.util.Calendar;
 /**
  * 将输入的字符串转化为具体的时间格式
