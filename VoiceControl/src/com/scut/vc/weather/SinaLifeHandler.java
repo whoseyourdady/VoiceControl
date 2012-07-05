@@ -3,8 +3,6 @@ package com.scut.vc.weather;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import android.util.Log;
 /**
  * 将网页的XML中通过标签获取标签里的信息，并将之复制到
  * LifeCurrentCondition的对象中储存转化

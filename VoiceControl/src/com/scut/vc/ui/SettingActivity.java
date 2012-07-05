@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -66,17 +65,23 @@ public class SettingActivity extends PreferenceActivity implements
 		// 读取数据，并提交，用于其他activity进行数据的读取
 		final SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		// 获取语音识别引擎选项的数据
-		String voicetEngine = sp.getString("voiceEngine", "error~~"); // list1是控件的ID
+		// 获取语音识别引擎选项的数据，并提交
+		String voicetEngine = sp.getString("voiceEngine", "error~~"); // voiceEngine是控件的ID
 		Editor sharedata_voice = getSharedPreferences("voiceEngine", 0).edit();
 		sharedata_voice.putString("voiceEngine", voicetEngine);// voiceEngine是给外部activity的数据id
 		sharedata_voice.commit();
-		// 获取搜索引擎选项的数据
-		String searchEngine = sp.getString("searchEngine", "error~~"); // list1是控件的ID
+		// 获取搜索引擎选项的数据，并提交
+		String searchEngine = sp.getString("searchEngine", "error~~"); // searchEngine是控件的ID
 		Editor sharedata_search = getSharedPreferences("searchEngine", 0)
 				.edit();
-		sharedata_search.putString("searchEngine", searchEngine);// voiceEngine是给外部activity的数据id
+		sharedata_search.putString("searchEngine", searchEngine);// searchEngine是给外部activity的数据id
 		sharedata_search.commit();
+		// 获取自启动识别选项的数据，并提交
+		boolean startTurn = sp.getBoolean("startTurn", false); // startTurn是控件的ID
+		Editor sharedata_start = getSharedPreferences("startTurn", 0)
+				.edit();
+		sharedata_start.putBoolean("startTurn", startTurn);// startTurn是给外部activity的数据id
+		sharedata_start.commit();
 
 		Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show();
 	}

@@ -1,7 +1,6 @@
 package com.scut.vc.alarm;
 
 import java.io.IOException;
-import java.sql.DatabaseMetaData;
 
 import android.R;
 import android.app.Activity;

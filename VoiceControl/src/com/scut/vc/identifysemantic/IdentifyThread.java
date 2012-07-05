@@ -1,11 +1,10 @@
 package com.scut.vc.identifysemantic;
 
-import com.scut.vc.ui.MainActivity;
-import com.scut.vc.utility.Task;
-
 import android.app.Activity;
 import android.os.Message;
-import android.widget.SlidingDrawer;
+
+import com.scut.vc.ui.MainActivity;
+import com.scut.vc.utility.Task;
 
 public class IdentifyThread implements Runnable {
 
@@ -16,13 +15,20 @@ public class IdentifyThread implements Runnable {
 		// TODO Auto-generated method stub
 		while (true) {
 			try {
+				while ((SemanticIdentify.appLock)
+						|| (SemanticIdentify.contactLock)) {
+					Thread.sleep(10);
+				}
+
 				if (!MainActivity.voiceString.equals("")) {
 					ShowProcess();
-					Task task = mSemanticIdentify.Identify((MainActivity.voiceString));
+					Task task = mSemanticIdentify
+							.Identify((MainActivity.voiceString));
 					Message msg = new Message();
 					msg.obj = task;
 					((MainActivity) mActivity).mhandler.sendMessage(msg);
 					MainActivity.voiceString = "";
+
 					ShowProcess();
 				} else {
 					Thread.sleep(1000);

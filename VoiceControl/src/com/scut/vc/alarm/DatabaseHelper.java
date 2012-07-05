@@ -1,7 +1,5 @@
 package com.scut.vc.alarm;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +7,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.webkit.WebChromeClient.CustomViewCallback;
 /**
  * 该类是数据库的帮助类，对数据库的各项操作都是在此进行的。
  * @author Administrator
