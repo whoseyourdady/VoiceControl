@@ -7,7 +7,7 @@
   android:paddingTop="5px"
   android:paddingLeft="10px"
   >
-  
+   
     <ProgressBar
         android:id="@+id/progressBar1"
         android:layout_width="65dp"

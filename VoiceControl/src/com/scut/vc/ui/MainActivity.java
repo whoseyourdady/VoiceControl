@@ -325,25 +325,8 @@ public class MainActivity extends Activity implements RecognizerDialogListener,
 			}
 				break;
 			case Task.Weather: {
-				HashMap weatherInfos = (HashMap) task.getTaskParam();
-				String city = (String) weatherInfos.get("city");
-				int day = (Integer) weatherInfos.get("day");
-				System.out.println(city + ":" + day);
-				mWeather = new Weather(city, day, MainActivity.this);
-				String weatherInfo;
-				try {
-					weatherInfo = mWeather.execute();
-					updateListView(R.layout.chat_helper, weatherInfo);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				String weatherInfos = (String) task.getTaskParam();
+				updateListView(R.layout.chat_helper, weatherInfos);
 			}
 				break;
 			case Task.ShowProcess: {

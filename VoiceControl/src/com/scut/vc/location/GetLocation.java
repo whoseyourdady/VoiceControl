@@ -75,7 +75,7 @@ public class GetLocation {
 				xr.parse(source);
 
 				localityName = handler.getLocalityName();
-				System.out.println("GetCity.reverseGeocode()" + localityName);
+				System.out.println("GetCity.reverseGeocode() ==   " + localityName);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
